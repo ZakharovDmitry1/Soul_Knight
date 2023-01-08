@@ -13,12 +13,18 @@ from settings import all_sprites, tiles_group
 
 
 class AnimationSprite(pygame.sprite.Sprite):
-    def __init__(self, sheet: pygame.Surface, columns: int, rows: int, x: int, y: int):
+    def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, resize_len=75):
+        self.resize_len: int = 50
+        newImage = Image.open(sheet).convert('RGBA').resize((resize_len * list_for_sprites[0].__len__(), resize_len * list_for_sprites.__len__()))
+        newImage.save('cache/wall2.png')
+        self.full_img: pygame.surface.Surface = load_image('cache/wall2.png')
         super().__init__(all_sprites)
-        self.frames: list = []
-        self.cut_sheet(sheet, columns, rows)
+        self.list_for_sprites: list[list[pygame.surface.Surface]] = list_for_sprites
+        self.cut_sheet(self.full_img, list_for_sprites)
         self.cur_frame: int = 0
-        self.image: pygame.Surface = self.frames[self.cur_frame]
+        self.cur_column: int = 0
+        print(self.list_for_sprites)
+        self.image: pygame.Surface = self.list_for_sprites[self.cur_column][self.cur_frame]
         self.rect = self.rect.move(x, y)
         self.timer: float = time.perf_counter()
 
@@ -26,19 +32,20 @@ class AnimationSprite(pygame.sprite.Sprite):
     def set_row(self):
         pass
 
-    def cut_sheet(self, sheet: pygame.Surface, columns: int, rows: int):
-        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
-                                sheet.get_height() // 2)
-        for i in range(columns):
-            frame_location = (self.rect.w * i, self.rect.h * (rows - 1))
-            self.frames.append(sheet.subsurface(
-                pygame.Rect(frame_location, self.rect.size)))
+    def cut_sheet(self, sheet: pygame.Surface, list_for_sprites: list[list[pygame.surface.Surface]]):
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // list_for_sprites[0].__len__(),
+                                sheet.get_height() // self.list_for_sprites.__len__())
+        for j in range(list_for_sprites.__len__()):
+            for i in range(list_for_sprites[j].__len__()):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.list_for_sprites[j][i] = sheet.subsurface(pygame.Rect(
+                    frame_location, self.rect.size))
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         # print(self.timer - time.perf_counter())
-        if abs(self.timer - time.perf_counter()) > 1:
-            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = self.frames[self.cur_frame]
+        if abs(self.timer - time.perf_counter()) > 0.1:
+            self.cur_frame = (self.cur_frame + 1) % len(self.list_for_sprites[self.cur_column])
+            self.image = self.list_for_sprites[self.cur_column][self.cur_frame]
             self.timer: float = time.perf_counter()
 
 
@@ -52,6 +59,5 @@ class Tile(pygame.sprite.Sprite):
             newImage.save('cache/wall.png')
             self.image = load_image('cache/wall.png')
             self.image.set_colorkey(colorkey)
-        self.mask: pygame.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect().move(
             tile_width * pos_x, tile_height * pos_y)
