@@ -43,6 +43,8 @@ def start_game():
         all_sprites.update()
         player_group.draw(screen)
         weapons_group.draw(screen)
+        healthbar_group.draw(screen)
+
         clock.tick(FPS)
         camera.update(player)
         # обновляем положение всех спрайтов

@@ -3,6 +3,7 @@ from typing import Any
 import pygame
 
 from anim import Anim
+from healthbar import Healthbar
 from pictures_and_any import player_image, tile_width, tile_height
 from settings import *
 from weapons import Stick
@@ -18,6 +19,7 @@ class Player(Anim):
         self.rect = self.image.get_rect().move(
             tile_width * pos_x + 15, tile_height * pos_y + 5)
         self.set_weapon(Stick())
+        self.hp_bar: Healthbar = Healthbar(self.hp)
 
     def move(self, dx: int, dy: int):
         super(Player, self).move(dx, dy)
@@ -32,7 +34,6 @@ class Player(Anim):
                 self.cur_column = 2
             else:
                 self.cur_column = 3
-
 
         if pygame.sprite.spritecollideany(self, walls_group):
             super(Player, self).move(-dx, -dy)
