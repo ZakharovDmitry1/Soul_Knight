@@ -6,8 +6,8 @@ HEIGHT: int = 600
 
 TILE_SIZE: int = 50
 
-MAP_WIDTH: int = 50
-MAP_HEIGHT: int = 50
+MAP_WIDTH: int = 400
+MAP_HEIGHT: int = 400
 
 FPS: int = 50
 

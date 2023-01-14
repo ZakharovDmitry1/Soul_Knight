@@ -1,3 +1,5 @@
+import threading
+
 import pygame as pygame
 from generation_map import Map
 from player import Player
@@ -23,7 +25,8 @@ def start_game():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                player.weapon.animation()
+                t1 = threading.Thread(target=player.weapon.attak_animation)
+                t1.start()
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:

@@ -43,7 +43,7 @@ class AnimationSprite(pygame.sprite.Sprite):
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         # print(self.timer - time.perf_counter())
-        if abs(self.timer - time.perf_counter()) > 0.1:
+        if abs(self.timer - time.perf_counter()) > 0.07:
             self.cur_frame = (self.cur_frame + 1) % len(self.list_for_sprites[self.cur_column])
             self.image = self.list_for_sprites[self.cur_column][self.cur_frame]
             self.timer: float = time.perf_counter()

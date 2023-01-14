@@ -1,3 +1,4 @@
+import copy
 import os
 import random
 import sys
@@ -10,7 +11,7 @@ from animation_sprite import Tile
 from functions import load_image
 from pictures_and_any import tile_images
 from player import Player
-from settings import walls_group, TILE_SIZE
+from settings import walls_group, TILE_SIZE, MAP_WIDTH, MAP_HEIGHT
 
 
 class Pair:
@@ -45,6 +46,7 @@ class Map:
 
         self.create_walls()
         self.create_player()
+        self.generete_sprite_walls()
 
         with open('maps/mainMap.txt', 'w') as file:
             for i in self.map:
@@ -55,7 +57,7 @@ class Map:
 
     def generate_level(self) -> tuple[Player, int, int]:
         new_player, x, y = None, None, None
-        wall = Image.new('RGBA', (self.map.__len__() * TILE_SIZE, self.map[0].__len__() * TILE_SIZE), '#000000')
+        wall = Image.new('RGBA', (self.map[0].__len__() * TILE_SIZE, self.map.__len__() * TILE_SIZE), '#000000')
 
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
@@ -65,11 +67,11 @@ class Map:
                         'RGBA').resize((50, 50))
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
-                elif self.map[y][x] == '#':
-                    # рисуем элементы стены на картинке
-                    walls_group.add(
-                        Tile(f'v1.1 dungeon crawler 16X16 pixel pack/tiles/wall/wall_{random.randint(1, 2)}.png', x, y,
-                             resize=50))
+                # elif self.map[y][x] == '#':
+                #     # рисуем элементы стены на картинке
+                #     walls_group.add(
+                #         Tile(f'v1.1 dungeon crawler 16X16 pixel pack/tiles/wall/wall_{random.randint(1, 2)}.png', x, y,
+                #              resize=50))
                 elif self.map[y][x] == '@':
                     newImage = Image.open(
                         f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
@@ -82,6 +84,44 @@ class Map:
         Tile('maps/map.png', 0, 0)
         # вернем игрока, а также размер поля в клетках
         return new_player, x, y
+
+    def generete_sprite_walls(self):
+        map2: list[list[str]] = copy.deepcopy(self.map)
+
+        for i in range(self.map.__len__()):
+            for j in range(self.map[0].__len__()):
+                if map2[i][j] == '#':
+                    j1: int = j
+                    i1: int = i
+                    while j1 < map2[0].__len__() and map2[i1][j1] == '#':
+                        j1 += 1
+                    while True:
+                        if i1 == map2.__len__():
+                            break
+                        f: bool = True
+                        for n in range(j, j1):
+                            if map2[i1][n] != '#':
+                                f = False
+                        if not f:
+                            break
+                        else:
+                            i1 += 1
+                    for x in range(i, i1):
+                        for y in range(j, j1):
+                            map2[x][y] = '.'
+                    img = PIL.Image.new('RGBA', (50 * (j1 - j), 50 * (i1 - i)), (0, 0, 0, 0))
+
+                    for x in range(j1 - j):
+                        for y in range(i1 - i):
+                            newImage = Image.open(
+                                f'v1.1 dungeon crawler 16X16 pixel pack/tiles/wall/wall_{random.randint(1, 2)}.png').convert(
+                                'RGBA').resize((50, 50))
+                            img.paste(newImage, (x * 50, y * 50))
+                    #img = img.rotate(90)
+                    img.save('cache/wall.png')
+                    walls_group.add(
+                            Tile(f'cache/wall.png', j, i))
+
 
     def create_player(self):
         f = True
@@ -106,16 +146,16 @@ class Map:
             if leaf.halls.__len__() > 0:
                 for i in range(leaf.halls[0][0], leaf.halls[0][0] + leaf.halls[0][2]):
                     for j in range(leaf.halls[0][1], leaf.halls[0][1] + leaf.halls[0][3]):
-                        self.map[i][j] = '.'
+                        self.map[j][i] = '.'
                 if leaf.halls.__len__() == 2:
                     for i in range(leaf.halls[1][0], leaf.halls[1][0] + leaf.halls[1][2]):
                         for j in range(leaf.halls[1][1], leaf.halls[1][1] + leaf.halls[1][3]):
-                            self.map[i][j] = '.'
+                            self.map[j][i] = '.'
             if leaf.rightChild is not None or leaf.leftChild is not None:
                 continue
             for i in range(leaf.x + leaf.roomPos[0] + 1, leaf.x + leaf.roomPos[0] + leaf.roomSize[0]):
                 for j in range(leaf.y + leaf.roomPos[1] + 1, leaf.y + leaf.roomPos[1] + leaf.roomSize[1]):
-                    self.map[i][j] = '.'
+                    self.map[j][i] = '.'
 
 
 class Leaf:

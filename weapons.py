@@ -1,3 +1,5 @@
+import time
+
 import pygame
 from pygame import Surface
 
@@ -20,19 +22,21 @@ class Weapon(pygame.sprite.Sprite):
         self.rows: int = rows
         self.columns: int = columns
 
-        self.rect = pygame.Rect(0, 0, self.sheet.get_width() // self.columns,
-                                self.sheet.get_height() // 12)
+        self.rect = pygame.Rect(0, 0, self.sheet.get_width() // (self.sheet.get_height() // self.rows),
+                                self.sheet.get_height() // self.rows)
 
         self.frames: list = []
         self.cur_frame: int = 0
-        self.animation()
+        self.cut_sheet()
         self.image: pygame.Surface = self.frames[self.cur_frame]
 
-    # def set_coords(self, x: int, y: int):
-    #     self.x = x
-    #     self.y = y
+    def attak_animation(self):
+        for i in range(len(self.frames)):
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+            self.image = self.frames[self.cur_frame]
+            time.sleep(0.2)
 
-    def animation(self):
+    def cut_sheet(self):
         for i in range(self.columns):
             frame_location = (self.rect.w * i, self.rect.h * (self.rows - 1))
             self.frames.append(self.sheet.subsurface(
@@ -44,7 +48,7 @@ class Weapon(pygame.sprite.Sprite):
 
 class Stick(Weapon):
     def __init__(self):
-        super(Stick, self).__init__(load_image('RoguelikeWeapons/Weapons 3-Sheet.png'), 3, 11, 27, 0.5, 10)
+        super(Stick, self).__init__(load_image('RoguelikeWeapons/Weapons 2-Sheet.png'), 11, 4, 27, 0.5, 10)
         pass
 
 
