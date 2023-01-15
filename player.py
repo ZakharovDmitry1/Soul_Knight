@@ -1,3 +1,4 @@
+import threading
 from typing import Any
 
 import pygame
@@ -20,6 +21,7 @@ class Player(Anim):
             tile_width * pos_x + 15, tile_height * pos_y + 5)
         self.set_weapon(Stick())
         self.hp_bar: Healthbar = Healthbar(self.hp)
+        self.mob_radius = 30
 
     def move(self, dx: int, dy: int):
         super(Player, self).move(dx, dy)
@@ -39,6 +41,13 @@ class Player(Anim):
             super(Player, self).move(-dx, -dy)
             if self.weapon is not None:
                 self.weapon.move(-dx * self.speed, -dy * self.speed)
+
+    def attak(self):
+        t1 = threading.Thread(target=self.weapon.attak_animation)
+        t1.start()
+        for i in mobs_group:
+            if pygame.sprite.collide_rect(self.weapon, i):
+                i.set_damage(self.weapon.damage)
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         super().update()

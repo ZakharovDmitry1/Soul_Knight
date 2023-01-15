@@ -25,8 +25,9 @@ def start_game():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                t1 = threading.Thread(target=player.weapon.attak_animation)
-                t1.start()
+                player.attak()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                print(0)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -40,6 +41,7 @@ def start_game():
         if keys[pygame.K_ESCAPE]:
             running = False
 
+
         screen.fill((255, 255, 255))
 
         all_sprites.draw(screen)
@@ -47,6 +49,7 @@ def start_game():
         player_group.draw(screen)
         weapons_group.draw(screen)
         healthbar_group.draw(screen)
+        mobs_group.draw(screen)
 
         clock.tick(FPS)
         camera.update(player)

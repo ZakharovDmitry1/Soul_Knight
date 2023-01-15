@@ -9,7 +9,7 @@ from PIL import Image
 
 from functions import load_image
 from pictures_and_any import tile_images, tile_width, tile_height
-from settings import all_sprites, tiles_group
+from settings import all_sprites, tiles_group, TILE_SIZE
 
 
 class AnimationSprite(pygame.sprite.Sprite):
@@ -25,7 +25,7 @@ class AnimationSprite(pygame.sprite.Sprite):
         self.cur_column: int = 0
         print(self.list_for_sprites)
         self.image: pygame.Surface = self.list_for_sprites[self.cur_column][self.cur_frame]
-        self.rect = self.rect.move(x, y)
+        self.rect = self.rect.move(x * TILE_SIZE, y * TILE_SIZE)
         self.timer: float = time.perf_counter()
 
     @abstractmethod
@@ -47,6 +47,24 @@ class AnimationSprite(pygame.sprite.Sprite):
             self.cur_frame = (self.cur_frame + 1) % len(self.list_for_sprites[self.cur_column])
             self.image = self.list_for_sprites[self.cur_column][self.cur_frame]
             self.timer: float = time.perf_counter()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class Tile(pygame.sprite.Sprite):
