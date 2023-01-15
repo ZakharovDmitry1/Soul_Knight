@@ -18,7 +18,7 @@ class Player(Anim):
         self.list_for_sprites = [[0] * 6 for _ in range(4)]
         super(Player, self).__init__(self.sheet, self.list_for_sprites, pos_x, pos_y, speed, hp)
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x + 15, tile_height * pos_y + 5)
+            tile_width * pos_x + TILE_SIZE // 4, tile_height * pos_y + TILE_SIZE // 7)
         self.set_weapon(Stick())
         self.hp_bar: Healthbar = Healthbar(self.hp)
         self.mob_radius = 30
@@ -34,7 +34,7 @@ class Player(Anim):
         elif dy != 0:
             if self.cur_column == 0:
                 self.cur_column = 2
-            else:
+            if self.cur_column == 1:
                 self.cur_column = 3
 
         if pygame.sprite.spritecollideany(self, walls_group):

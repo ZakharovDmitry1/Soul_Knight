@@ -4,10 +4,13 @@ from screeninfo import get_monitors
 WIDTH: int = 700
 HEIGHT: int = 600
 
-TILE_SIZE: int = 50
+TILE_SIZE: int = 40
 
-MAP_WIDTH: int = 150
-MAP_HEIGHT: int = 150
+MAP_WIDTH: int = 200
+MAP_HEIGHT: int = 200
+
+MIN_ROOM_SIZE: int = 15
+MIN_LEAF_SIZE: int = 20
 
 FPS: int = 50
 

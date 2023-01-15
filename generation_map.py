@@ -65,20 +65,20 @@ class Map:
                 if self.map[y][x] == '.':
                     newImage = Image.open(
                         f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
-                        'RGBA').resize((50, 50))
+                        'RGBA').resize((TILE_SIZE, TILE_SIZE))
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
                 elif self.map[y][x] == 'f':
                     mobs_group.add(FlyingCreature(x, y))
                     newImage = Image.open(
                         f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
-                        'RGBA').resize((50, 50))
+                        'RGBA').resize((TILE_SIZE, TILE_SIZE))
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
                 elif self.map[y][x] == '@':
                     newImage = Image.open(
                         f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
-                        'RGBA').resize((50, 50))
+                        'RGBA').resize((TILE_SIZE, TILE_SIZE))
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
                     new_player = Player(x, y)
@@ -112,14 +112,14 @@ class Map:
                     for x in range(i, i1):
                         for y in range(j, j1):
                             map2[x][y] = '.'
-                    img: Image = PIL.Image.new('RGBA', (50 * (j1 - j), 50 * (i1 - i)), (0, 0, 0, 0))
+                    img: Image = PIL.Image.new('RGBA', (TILE_SIZE * (j1 - j), TILE_SIZE * (i1 - i)), (0, 0, 0, 0))
 
                     for x in range(j1 - j):
                         for y in range(i1 - i):
                             newImage: Image = Image.open(
                                 f'v1.1 dungeon crawler 16X16 pixel pack/tiles/wall/wall_{random.randint(1, 2)}.png').convert(
-                                'RGBA').resize((50, 50))
-                            img.paste(newImage, (x * 50, y * 50))
+                                'RGBA').resize((TILE_SIZE, TILE_SIZE))
+                            img.paste(newImage, (x * TILE_SIZE, y * TILE_SIZE))
                     # img = img.rotate(90)
                     img.save('cache/wall.png')
                     walls_group.add(
@@ -170,7 +170,7 @@ class Leaf:
         self.leftChild = None
         self.rightChild = None
         self.halls: list[tuple] = []
-        self.MIN_LEAF_SIZE: int = 15
+        self.MIN_LEAF_SIZE: int = MIN_LEAF_SIZE
         self.room_map = None
 
     def create_rooms(self):
@@ -182,8 +182,8 @@ class Leaf:
             if self.leftChild is not None and self.rightChild is not None:
                 self.createHall(self.leftChild.getRoom(), self.rightChild.getRoom())
         else:
-            self.roomSize: tuple = (random.randint(10, self.width - 2),
-                                    random.randint(10, self.height - 2))
+            self.roomSize: tuple = (random.randint(MIN_ROOM_SIZE, self.width - 2),
+                                    random.randint(MIN_ROOM_SIZE, self.height - 2))
             self.roomPos: tuple = \
                 (random.randint(1, self.width - self.roomSize[0] - 1),
                  random.randint(1, self.height - self.roomSize[1] - 1))

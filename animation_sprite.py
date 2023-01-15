@@ -49,24 +49,6 @@ class AnimationSprite(pygame.sprite.Sprite):
             self.timer: float = time.perf_counter()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type: str, pos_x: int, pos_y: int, colorkey: tuple = (0, 0, 0), resize: int = -1):
         super().__init__(tiles_group, all_sprites)
@@ -78,4 +60,4 @@ class Tile(pygame.sprite.Sprite):
             self.image = load_image('cache/wall.png')
             self.image.set_colorkey(colorkey)
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x, tile_height * pos_y)
+            TILE_SIZE * pos_x, TILE_SIZE * pos_y)
