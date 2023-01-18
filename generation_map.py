@@ -4,6 +4,7 @@ import random
 import sys
 
 import PIL
+import numpy
 import pygame
 from PIL import Image, ImageDraw
 
@@ -39,7 +40,7 @@ class Map:
 
         root.create_rooms()
 
-        self.map = [['#'] * self.size[0] for _ in range(self.size[1])]
+        self.map = numpy.array([['#'] * self.size[0] for _ in range(self.size[1])], str)
 
         self.create_walls()
         self.create_player()
@@ -81,7 +82,7 @@ class Map:
         return new_player
 
     def generete_sprite_walls(self):
-        map2: list[list[str]] = copy.deepcopy(self.map)
+        map2: list[list[str]] = self.map.copy()
 
         for i in range(self.map.__len__()):
             for j in range(self.map[0].__len__()):

@@ -66,4 +66,36 @@ start_game()
 
 def create_way(player: Player):
     x_pos, y_pos = map.get_pos((player.rect.x, player.rect.y), (player.real_pos_x, player.real_pos_y), player.rect.size)
-    array = np.array(player.mob_radius)
+    array: np.ndarray = np.zeros((player.mob_radius * 2 + 1, player.mob_radius * 2 + 1, 3), int)
+
+    lx = x_pos - player.mob_radius
+    rx = x_pos + player.mob_radius
+
+    ly = y_pos - player.mob_radius
+    ry = y_pos + player.mob_radius
+
+    if lx < 0:
+        lx = 0
+    if rx > MAP_WIDTH:
+        rx = MAP_WIDTH
+    if ly < 0:
+        ly = 0
+    if ry > MAP_HEIGHT:
+        ry = MAP_HEIGHT
+
+    for i in range(lx, rx):
+        for j in range(ly, ry):
+            if map.map[i][j] == '#':
+                array[lx - i][ly - j][0] = -1
+
+    for mob in mobs_group:
+        x, y = map.get_pos((mob.rect.x, mob.rect.y), (player.real_pos_x, player.real_pos_y), player.rect.size)
+        if lx <= x <= rx and ly <= y <= ry:
+            array[lx - x][ly - y][1] = 1
+
+def bfs()
+
+
+
+
+
