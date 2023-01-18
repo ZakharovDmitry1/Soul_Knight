@@ -5,7 +5,7 @@ from generation_map import Map
 from player import Player
 from camera import Camera
 from settings import *
-
+import numpy as np
 
 pygame.init()
 pygame.display.set_caption("Soul_Knight")
@@ -30,7 +30,7 @@ def start_game():
                 pass
                 print(map.get_pos(event.pos, (player.real_pos_x, player.real_pos_y), player.rect.size))
 
-        #print(player.real_pos_x, player.real_pos_y)
+        # print(player.real_pos_x, player.real_pos_y)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -43,7 +43,6 @@ def start_game():
             player.move(0, -1)
         if keys[pygame.K_ESCAPE]:
             running = False
-
 
         screen.fill((255, 255, 255))
 
@@ -62,5 +61,9 @@ def start_game():
         pygame.display.flip()
 
 
-
 start_game()
+
+
+def create_way(player: Player):
+    x_pos, y_pos = map.get_pos((player.rect.x, player.rect.y), (player.real_pos_x, player.real_pos_y), player.rect.size)
+    array = np.array(player.mob_radius)

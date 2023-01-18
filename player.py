@@ -5,14 +5,13 @@ import pygame
 
 from anim import Anim
 from healthbar import Healthbar
-from pictures_and_any import player_image
 from settings import *
 from weapons import Stick
 
 
 class Player(Anim):
     def __init__(self, pos_x: int, pos_y: int, hp: int = 100, speed: int = 22):
-        self.sheet: str = player_image
+        self.sheet: str = 'v1.1 dungeon crawler 16X16 pixel pack/heroes/knight/knight_sprite.png'
 
         self.real_pos_x: int = pos_x * TILE_SIZE
         self.real_pos_y: int = pos_y * TILE_SIZE

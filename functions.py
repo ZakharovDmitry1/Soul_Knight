@@ -3,6 +3,11 @@ import sys
 
 import pygame
 
+class Pair:
+    def __init__(self, first, second):
+        self.first = first
+        self.second = second
+
 
 def load_image(name: str):
     if not os.path.isfile(name):
