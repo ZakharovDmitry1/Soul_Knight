@@ -36,7 +36,6 @@ class Weapon(pygame.sprite.Sprite):
 
         self.rect = pygame.Rect(0, 0, self.sheet.get_height() // self.rows,
                                 self.sheet.get_height() // self.rows)
-        print(self.rect.size)
 
         self.frames: list = []
         self.cur_frame: int = 0

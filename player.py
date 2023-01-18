@@ -5,7 +5,7 @@ import pygame
 
 from anim import Anim
 from healthbar import Healthbar
-from pictures_and_any import player_image, tile_width, tile_height
+from pictures_and_any import player_image
 from settings import *
 from weapons import Stick
 
@@ -13,18 +13,25 @@ from weapons import Stick
 class Player(Anim):
     def __init__(self, pos_x: int, pos_y: int, hp: int = 100, speed: int = 22):
         self.sheet: str = player_image
+
+        self.real_pos_x: int = pos_x * TILE_SIZE
+        self.real_pos_y: int = pos_y * TILE_SIZE
+
         self.columns: int = 4
         self.rows: int = 2
+
         self.list_for_sprites = [[0] * 6 for _ in range(4)]
         super(Player, self).__init__(self.sheet, self.list_for_sprites, pos_x, pos_y, speed, hp)
         self.rect = self.image.get_rect().move(
-            tile_width * pos_x + TILE_SIZE // 4, tile_height * pos_y + TILE_SIZE // 7)
+            TILE_SIZE * pos_x + TILE_SIZE // 4, TILE_SIZE * pos_y + TILE_SIZE // 7)
         self.set_weapon(Stick())
         self.hp_bar: Healthbar = Healthbar(self.hp)
         self.mob_radius = 30
 
     def move(self, dx: int, dy: int):
         super(Player, self).move(dx, dy)
+        self.real_pos_x += dx * self.speed
+        self.real_pos_y += dy * self.speed
         if self.weapon is not None:
             self.weapon.move(dx * self.speed, dy * self.speed)
         if dx > 0:
@@ -39,6 +46,8 @@ class Player(Anim):
 
         if pygame.sprite.spritecollideany(self, walls_group):
             super(Player, self).move(-dx, -dy)
+            self.real_pos_x -= dx * self.speed
+            self.real_pos_y -= dy * self.speed
             if self.weapon is not None:
                 self.weapon.move(-dx * self.speed, -dy * self.speed)
 

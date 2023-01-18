@@ -8,14 +8,14 @@ import pygame.sprite
 from PIL import Image
 
 from functions import load_image
-from pictures_and_any import tile_images, tile_width, tile_height
 from settings import all_sprites, tiles_group, TILE_SIZE
 
 
 class AnimationSprite(pygame.sprite.Sprite):
     def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, resize_len=75):
         self.resize_len: int = 50
-        newImage = Image.open(sheet).convert('RGBA').resize((resize_len * list_for_sprites[0].__len__(), resize_len * list_for_sprites.__len__()))
+        newImage = Image.open(sheet).convert('RGBA').resize(
+            (resize_len * list_for_sprites[0].__len__(), resize_len * list_for_sprites.__len__()))
         newImage.save('cache/wall2.png')
         self.full_img: pygame.surface.Surface = load_image('cache/wall2.png')
         super().__init__(all_sprites)
@@ -23,7 +23,6 @@ class AnimationSprite(pygame.sprite.Sprite):
         self.cut_sheet(self.full_img, list_for_sprites)
         self.cur_frame: int = 0
         self.cur_column: int = 0
-        print(self.list_for_sprites)
         self.image: pygame.Surface = self.list_for_sprites[self.cur_column][self.cur_frame]
         self.rect = self.rect.move(x * TILE_SIZE, y * TILE_SIZE)
         self.timer: float = time.perf_counter()

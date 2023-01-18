@@ -15,7 +15,7 @@ map = Map((MAP_WIDTH, MAP_HEIGHT))
 
 
 def start_game():
-    player, level_x, level_y = map.generate_level()
+    player = map.generate_level()
     player_group.add(player)
     running: bool = True
     camera = Camera()
@@ -27,7 +27,10 @@ def start_game():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 player.attak()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                print(0)
+                pass
+                print(map.get_pos(event.pos, (player.real_pos_x, player.real_pos_y), player.rect.size))
+
+        #print(player.real_pos_x, player.real_pos_y)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:

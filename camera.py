@@ -14,4 +14,4 @@ class Camera:
 
     def update(self, target: pygame.sprite.Sprite):
         self.dx = - (target.rect.x + target.rect.w // 2 - MONITOR_WIDTH // 2 - 20)
-        self.dy = - (target.rect.y + target.rect.w // 2 - MONITOR_HEIGHT // 2 - 20)
+        self.dy = - (target.rect.y + target.rect.h // 2 - MONITOR_HEIGHT // 2 - 20)

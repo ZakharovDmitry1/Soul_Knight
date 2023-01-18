@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 import player
 from animation_sprite import Tile
 from functions import load_image
-from pictures_and_any import tile_images
+# from pictures_and_any import tile_images
 from player import Player
 from settings import *
 from anim import *
@@ -26,7 +26,6 @@ class Map:
     def __init__(self, size: tuple[int, int]):
         self.size = size
         self.leafs: list[Leaf] = []
-        l = None
         root: Leaf = Leaf(0, 0, size[0], size[1])
         self.leafs.append(root)
         did_split: bool = True
@@ -54,11 +53,9 @@ class Map:
             for i in self.map:
                 file.write(''.join(i) + '\n')
 
-    def generate_level(self) -> tuple[Player, int, int]:
+    def generate_level(self) -> Player:
         new_player, x, y = None, None, None
         wall = Image.new('RGBA', (self.map[0].__len__() * TILE_SIZE, self.map.__len__() * TILE_SIZE), '#000000')
-
-        self.map[10][10] = 'f'
 
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
@@ -83,10 +80,9 @@ class Map:
                                (x * TILE_SIZE, y * TILE_SIZE))
                     new_player = Player(x, y)
         wall.save('maps/map.png')
-        tile_images['empty'] = load_image('maps/map.png')
         Tile('maps/map.png', 0, 0)
-        # вернем игрока, а также размер поля в клетках
-        return new_player, x, y
+        # вернем игрока
+        return new_player
 
     def generete_sprite_walls(self):
         map2: list[list[str]] = copy.deepcopy(self.map)
@@ -157,7 +153,17 @@ class Map:
                 continue
             for i in range(leaf.x + leaf.roomPos[0] + 1, leaf.x + leaf.roomPos[0] + leaf.roomSize[0]):
                 for j in range(leaf.y + leaf.roomPos[1] + 1, leaf.y + leaf.roomPos[1] + leaf.roomSize[1]):
-                    self.map[j][i] = leaf.room_map[i - (leaf.x + leaf.roomPos[0] + 1)][j - (leaf.y + leaf.roomPos[1] + 1)]
+                    self.map[j][i] = leaf.room_map[i - (leaf.x + leaf.roomPos[0] + 1)][
+                        j - (leaf.y + leaf.roomPos[1] + 1)]
+
+    def get_pos(self, mouse_pos: tuple[int, int],
+                player_pos: tuple[int, int],
+                player_size: tuple[int, int]) -> tuple[int, int]:
+        x: int = mouse_pos[0] + player_pos[0] + player_size[0] // 2 - MONITOR_WIDTH // 2 - 20
+        y: int = mouse_pos[1] + player_pos[1] + player_size[1] // 2 - MONITOR_HEIGHT // 2 - 20
+        posx: int = x // TILE_SIZE
+        posy: int = y // TILE_SIZE
+        return posx, posy
 
 
 class Leaf:
@@ -189,8 +195,6 @@ class Leaf:
                  random.randint(1, self.height - self.roomSize[1] - 1))
             self.room = (self.roomPos[0] + self.x, self.roomPos[1] + self.y,
                          self.roomSize[0], self.roomSize[1])
-            print(self.roomSize[1])
-            print(self.roomSize[0])
             self.room_map = [[''] * self.roomSize[1] for _ in range(self.roomSize[0])]
             for i in range(self.roomSize[0]):
                 for j in range(self.roomSize[1]):
@@ -198,8 +202,6 @@ class Leaf:
                         self.room_map[i][j] = 'f'
                     else:
                         self.room_map[i][j] = '.'
-
-
 
     def split(self) -> bool:
         if self.leftChild is not None or self.rightChild is not None:
