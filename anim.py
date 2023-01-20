@@ -41,22 +41,22 @@ class EngryMob(Anim):
     def __init__(self, sheet: str, list_for_sprites: list[list[int]], x: int, y: int, speed: int, hp: int):
         super(EngryMob, self).__init__(sheet, list_for_sprites, x, y, speed, hp)
 
-    def run(self, way: list[Pair]):
-        for i in range(0, way.__len__() // 3 * 3, 3):
-            xcoord = way[i].first
-            ycoord = way[i].second
-            for j in range(11):
-                t = j / 10
-                new_x: int = (1 - t) ** 2 * way[i].first + 2 * (1 - t) * t * way[i + 1].first + t * 2 * way[i + 2].first
-                new_y: int = (1 - t) ** 2 * way[i].second + 2 * (1 - t) * t * way[i + 1].second + t * 2 * way[
-                    i + 2].second
-                self.rect = self.rect.move(new_x - xcoord, new_y - ycoord)
-                xcoord = new_x
-                ycoord = new_y
-                time.sleep(1 / self.speed)
+    def run(self, way: list[tuple[int, int]]):
+        print(way)
+        self.rect = self.rect.move(way[-1][1] - way[0][1], way[-1][0] - way[0][0])
+        # for i in range(0, way.__len__() // 3 * 3, 3):
+        #     xcoord = way[i][0]
+        #     ycoord = way[i][1]
+        #     for j in range(11):
+        #         t = j / 10
+        #         new_x: int = (1 - t) ** 2 * way[i][0] + 2 * (1 - t) * t * way[i + 1][0] + t * 2 * way[i + 2][0]
+        #         new_y: int = (1 - t) ** 2 * way[i][1] + 2 * (1 - t) * t * way[i + 1][1] + t * 2 * way[i + 2][1]
+        #         self.rect = self.rect.move(new_x - xcoord, new_y - ycoord)
+        #         xcoord = new_x
+        #         ycoord = new_y
 
 
-class FlyingCreature(Anim):
+class FlyingCreature(EngryMob):
     def __init__(self, x: int, y: int):
         super(FlyingCreature, self).__init__(
             'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/fly_anim_spritesheet.png',

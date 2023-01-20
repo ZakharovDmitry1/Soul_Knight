@@ -1,10 +1,11 @@
 import copy
 import os
+import queue
 import random
 import sys
 
 import PIL
-import numpy
+import numpy as np
 import pygame
 from PIL import Image, ImageDraw
 
@@ -17,8 +18,6 @@ from settings import *
 from anim import *
 
 
-
-
 class Map:
     def __init__(self, size: tuple[int, int]):
         self.size = size
@@ -27,6 +26,7 @@ class Map:
         self.leafs.append(root)
         did_split: bool = True
         self.MIN_LEAF_SIZE = 15
+        self.player = None
 
         while (did_split):
             did_split = False
@@ -40,7 +40,7 @@ class Map:
 
         root.create_rooms()
 
-        self.map = numpy.array([['#'] * self.size[0] for _ in range(self.size[1])], str)
+        self.map = np.array([['#'] * self.size[0] for _ in range(self.size[1])], str)
 
         self.create_walls()
         self.create_player()
@@ -53,6 +53,8 @@ class Map:
     def generate_level(self) -> Player:
         new_player, x, y = None, None, None
         wall = Image.new('RGBA', (self.map[0].__len__() * TILE_SIZE, self.map.__len__() * TILE_SIZE), '#000000')
+
+        self.map[10][10] = 'f'
 
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
@@ -75,11 +77,11 @@ class Map:
                         'RGBA').resize((TILE_SIZE, TILE_SIZE))
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
-                    new_player = Player(x, y)
+                    self.player = Player(x, y)
         wall.save('maps/map.png')
         Tile('maps/map.png', 0, 0)
         # вернем игрока
-        return new_player
+        return self.player
 
     def generete_sprite_walls(self):
         map2: list[list[str]] = self.map.copy()
@@ -153,14 +155,92 @@ class Map:
                     self.map[j][i] = leaf.room_map[i - (leaf.x + leaf.roomPos[0] + 1)][
                         j - (leaf.y + leaf.roomPos[1] + 1)]
 
-    def get_pos(self, mouse_pos: tuple[int, int],
-                player_pos: tuple[int, int],
-                player_size: tuple[int, int]) -> tuple[int, int]:
-        x: int = mouse_pos[0] + player_pos[0] + player_size[0] // 2 - MONITOR_WIDTH // 2 - 20
-        y: int = mouse_pos[1] + player_pos[1] + player_size[1] // 2 - MONITOR_HEIGHT // 2 - 20
-        posx: int = x // TILE_SIZE
-        posy: int = y // TILE_SIZE
-        return posx, posy
+    def get_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
+        x: int = mouse_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
+        y: int = mouse_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
+        return x // TILE_SIZE, y // TILE_SIZE
+
+    def get_real_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
+        x: int = mouse_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
+        y: int = mouse_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
+        return x, y
+
+    def get_pos_for_map(self, pos: tuple[int, int]) -> tuple[int, int]:
+        return pos[0] * TILE_SIZE + TILE_SIZE // 2, pos[1] * TILE_SIZE + TILE_SIZE // 2
+
+    def create_way(self):
+        y_pos, x_pos = self.get_pos(
+            (self.player.rect.x + self.player.rect.h // 2, self.player.rect.y + self.player.rect.w // 2))
+
+        lx = x_pos - self.player.mob_radius
+        rx = x_pos + self.player.mob_radius
+
+        ly = y_pos - self.player.mob_radius
+        ry = y_pos + self.player.mob_radius
+
+        arr_pos_x = self.player.mob_radius + 1
+        arr_pos_y = self.player.mob_radius + 1
+
+        if lx < 0:
+            arr_pos_x += lx
+            lx = 0
+        if rx >= MAP_HEIGHT:
+            rx = MAP_HEIGHT - 1
+        if ly < 0:
+            arr_pos_y += ly
+            ly = 0
+        if ry >= MAP_WIDTH:
+            ry = MAP_WIDTH - 1
+
+        self.array: np.ndarray = np.zeros(((rx - lx) + 3, (ry - ly) + 3), int)
+
+        for i in range(lx, rx + 1):
+            for j in range(ly, ry + 1):
+                if self.map[i][j] == '#':
+                    self.array[i - lx + 1][j - ly + 1] = -1
+
+        for i in range(ry - ly + 3):
+            self.array[0][i] = 1
+            self.array[(rx - lx) + 2][i] = -1
+
+        for i in range(rx - lx + 3):
+            self.array[i][0] = 1
+            self.array[i][(ry - ly) + 2] = -1
+
+        self.voln(arr_pos_x, arr_pos_y, lx, rx, ly, ry)
+
+    def voln(self, pos_x: int, pos_y: int, lx: int, rx: int, ly: int, ry: int):
+        my_queue = queue.Queue()
+        my_queue.put((pos_x, pos_y))
+        self.array[pos_x][pos_y] = 1
+        while not my_queue.empty():
+            pos = my_queue.get()
+            for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                new_x, new_y = pos[0] + i[0], pos[1] + i[1]
+                if self.array[new_x][new_y] == 0 and self.array[pos[0]][pos[1]] < self.player.mob_radius:
+                    self.array[new_x][new_y] = self.array[pos[0]][pos[1]] + 1
+                    my_queue.put((new_x, new_y))
+
+        for mob in mobs_group:
+            y, x = self.get_pos((mob.rect.x, mob.rect.y))
+            if lx <= x <= rx and ly <= y <= ry:
+                pos: list = list(self.get_pos((mob.rect.x, mob.rect.y)))
+                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x, mob.rect.y))]
+                if self.array[x - lx + 1][y - ly + 1] <= 0:
+                    continue
+                flag = True
+                while flag:
+                    for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        new_x, new_y = pos[0] + i[0], pos[1] + i[1]
+                        if self.array[pos[0]][pos[1]] - 1 == self.array[new_x][new_y]:
+                            my_lst.append(self.get_pos_for_map((new_x, new_y)))
+                            pos[0] = new_x
+                            pos[1] = new_y
+                            break
+                    if self.array[pos[0]][pos[1]] == 1:
+                        flag = False
+                my_lst.append((self.player.real_pos_y, self.player.real_pos_x))
+                mob.run(my_lst)
 
 
 class Leaf:
@@ -195,10 +275,7 @@ class Leaf:
             self.room_map = [[''] * self.roomSize[1] for _ in range(self.roomSize[0])]
             for i in range(self.roomSize[0]):
                 for j in range(self.roomSize[1]):
-                    if random.randint(0, 100) < 3:
-                        self.room_map[i][j] = 'f'
-                    else:
-                        self.room_map[i][j] = '.'
+                    self.room_map[i][j] = '.'
 
     def split(self) -> bool:
         if self.leftChild is not None or self.rightChild is not None:
