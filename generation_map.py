@@ -229,7 +229,7 @@ class Map:
         for mob in mobs_group:
             y, x = self.get_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
             if lx <= x <= rx and ly <= y <= ry:
-                pos: list = list(self.get_pos((mob.rect.x + mob.rect.h, mob.rect.y // 2 + mob.rect.w // 2)))
+                pos: list = list(self.get_pos((mob.START_POS_X, mob.START_POS_Y)))
                 my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))]
                 print(pos)
                 print(self.get_pos((0, 0)))
