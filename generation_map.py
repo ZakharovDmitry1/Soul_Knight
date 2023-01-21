@@ -155,9 +155,9 @@ class Map:
                     self.map[j][i] = leaf.room_map[i - (leaf.x + leaf.roomPos[0] + 1)][
                         j - (leaf.y + leaf.roomPos[1] + 1)]
 
-    def get_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
-        x: int = mouse_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
-        y: int = mouse_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
+    def get_pos(self, rect_pos: tuple[int, int]) -> tuple[int, int]:
+        x: int = rect_pos[0] + self.player.rect.x + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
+        y: int = rect_pos[1] + self.player.rect.y + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
         return x // TILE_SIZE, y // TILE_SIZE
 
     def get_real_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
@@ -200,11 +200,11 @@ class Map:
                     self.array[i - lx + 1][j - ly + 1] = -1
 
         for i in range(ry - ly + 3):
-            self.array[0][i] = 1
+            self.array[0][i] = -1
             self.array[(rx - lx) + 2][i] = -1
 
         for i in range(rx - lx + 3):
-            self.array[i][0] = 1
+            self.array[i][0] = -1
             self.array[i][(ry - ly) + 2] = -1
 
         self.voln(arr_pos_x, arr_pos_y, lx, rx, ly, ry)
@@ -221,26 +221,39 @@ class Map:
                     self.array[new_x][new_y] = self.array[pos[0]][pos[1]] + 1
                     my_queue.put((new_x, new_y))
 
+        for i in self.array:
+            for j in i:
+                print(j, end='\t')
+            print()
+
         for mob in mobs_group:
-            y, x = self.get_pos((mob.rect.x, mob.rect.y))
+            y, x = self.get_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
             if lx <= x <= rx and ly <= y <= ry:
-                pos: list = list(self.get_pos((mob.rect.x, mob.rect.y)))
-                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x, mob.rect.y))]
-                if self.array[x - lx + 1][y - ly + 1] <= 0:
+                pos: list = list(self.get_pos((mob.rect.x + mob.rect.h, mob.rect.y // 2 + mob.rect.w // 2)))
+                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))]
+                print(pos)
+                print(self.get_pos((0, 0)))
+                if self.array[pos[0]][pos[1]] <= 0:
+                    print("//////////////////")
                     continue
                 flag = True
+                print("start_while")
                 while flag:
+                    t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                         new_x, new_y = pos[0] + i[0], pos[1] + i[1]
-                        if self.array[pos[0]][pos[1]] - 1 == self.array[new_x][new_y]:
+                        #print(self.array[new_x][new_y])
+                        if self.array[new_x][new_y] == self.array[pos[0]][pos[1]] - 1:
                             my_lst.append(self.get_pos_for_map((new_x, new_y)))
                             pos[0] = new_x
                             pos[1] = new_y
                             break
                     if self.array[pos[0]][pos[1]] == 1:
                         flag = False
-                my_lst.append((self.player.real_pos_y, self.player.real_pos_x))
+                my_lst.append(self.get_real_pos((0, 0)))
                 mob.run(my_lst)
+
+        self.array = None
 
 
 class Leaf:

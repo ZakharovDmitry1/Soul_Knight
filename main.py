@@ -9,7 +9,7 @@ import numpy as np
 
 pygame.init()
 pygame.display.set_caption("Soul_Knight")
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
 clock = pygame.time.Clock()
 map = Map((MAP_WIDTH, MAP_HEIGHT))
 player = map.generate_level()

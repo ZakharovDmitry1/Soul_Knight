@@ -43,7 +43,7 @@ class EngryMob(Anim):
 
     def run(self, way: list[tuple[int, int]]):
         print(way)
-        self.rect = self.rect.move(way[-1][1] - way[0][1], way[-1][0] - way[0][0])
+        self.rect = self.rect.move(way[-1][0] - way[0][0], way[-1][1] - way[0][1])
         # for i in range(0, way.__len__() // 3 * 3, 3):
         #     xcoord = way[i][0]
         #     ycoord = way[i][1]

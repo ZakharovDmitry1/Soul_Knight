@@ -27,6 +27,9 @@ class AnimationSprite(pygame.sprite.Sprite):
         self.rect = self.rect.move(x * TILE_SIZE, y * TILE_SIZE)
         self.timer: float = time.perf_counter()
 
+        self.START_POS_X: int = x * TILE_SIZE
+        self.START_POS_Y: int = y * TILE_SIZE
+
     @abstractmethod
     def set_row(self):
         pass
