@@ -43,17 +43,12 @@ class EngryMob(Anim):
 
     def run(self, way: list[tuple[int, int]]):
         print(way)
-        self.rect = self.rect.move(way[-1][0] - way[0][0], way[-1][1] - way[0][1])
-        # for i in range(0, way.__len__() // 3 * 3, 3):
-        #     xcoord = way[i][0]
-        #     ycoord = way[i][1]
-        #     for j in range(11):
-        #         t = j / 10
-        #         new_x: int = (1 - t) ** 2 * way[i][0] + 2 * (1 - t) * t * way[i + 1][0] + t * 2 * way[i + 2][0]
-        #         new_y: int = (1 - t) ** 2 * way[i][1] + 2 * (1 - t) * t * way[i + 1][1] + t * 2 * way[i + 2][1]
-        #         self.rect = self.rect.move(new_x - xcoord, new_y - ycoord)
-        #         xcoord = new_x
-        #         ycoord = new_y
+        x, y = way[0]
+        for i in range(1, way.__len__()):
+            x1, y1 = way[i]
+            self.rect = self.rect.move(x1 - x, y1 - y)
+            x, y = x1, y1
+            time.sleep(0.2)
 
 
 class FlyingCreature(EngryMob):

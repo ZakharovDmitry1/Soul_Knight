@@ -3,6 +3,7 @@ import os
 import queue
 import random
 import sys
+import threading
 
 import PIL
 import numpy as np
@@ -54,7 +55,7 @@ class Map:
         new_player, x, y = None, None, None
         wall = Image.new('RGBA', (self.map[0].__len__() * TILE_SIZE, self.map.__len__() * TILE_SIZE), '#000000')
 
-        self.map[10][10] = 'f'
+        self.map[11][10] = 'f'
 
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
@@ -156,8 +157,8 @@ class Map:
                         j - (leaf.y + leaf.roomPos[1] + 1)]
 
     def get_pos(self, rect_pos: tuple[int, int]) -> tuple[int, int]:
-        x: int = rect_pos[0] + self.player.rect.x + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
-        y: int = rect_pos[1] + self.player.rect.y + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
+        x: int = rect_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
+        y: int = rect_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
         return x // TILE_SIZE, y // TILE_SIZE
 
     def get_real_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
@@ -221,37 +222,46 @@ class Map:
                     self.array[new_x][new_y] = self.array[pos[0]][pos[1]] + 1
                     my_queue.put((new_x, new_y))
 
-        for i in self.array:
-            for j in i:
-                print(j, end='\t')
-            print()
+        # for i in self.array:
+        #     for j in i:
+        #         print(j, end='\t')
+        #     print()
 
         for mob in mobs_group:
             y, x = self.get_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
+            print(x, y)
+            print('lx, rx::', lx, rx)
+            print('ly, ry::', ly, ry)
+            print('player pos::', self.get_pos((self.player.rect.x + self.player.rect.h // 2,
+                                                 self.player.rect.y + self.player.rect.w // 2)))
             if lx <= x <= rx and ly <= y <= ry:
-                pos: list = list(self.get_pos((mob.START_POS_X, mob.START_POS_Y)))
+                pos: list = [x, y]
                 my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))]
-                print(pos)
-                print(self.get_pos((0, 0)))
-                if self.array[pos[0]][pos[1]] <= 0:
-                    print("//////////////////")
+                print(self.array[pos[0] - lx][pos[1] - ly], '**********************')
+                if self.array[pos[0] - lx][pos[1] - ly] <= 0:
+                    #print(self.array[pos[1] - ly][pos[0] - lx])
+                    print(pos[1] - ly, pos[0] - lx, "//////////////////")
                     continue
                 flag = True
                 print("start_while")
+                my_lst.append(self.get_pos_for_map((x, y)))
                 while flag:
                     t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                        new_x, new_y = pos[0] + i[0], pos[1] + i[1]
+                        new_y, new_x = pos[1] + i[1], pos[0] + i[0]
                         #print(self.array[new_x][new_y])
-                        if self.array[new_x][new_y] == self.array[pos[0]][pos[1]] - 1:
-                            my_lst.append(self.get_pos_for_map((new_x, new_y)))
+                        if self.array[new_x - lx][new_y - ly] == self.array[pos[0] - lx][pos[1] - ly] - 1:
+                            my_lst.append(self.get_pos_for_map((new_y, new_x)))
                             pos[0] = new_x
                             pos[1] = new_y
                             break
-                    if self.array[pos[0]][pos[1]] == 1:
+                    if self.array[pos[0] - lx][pos[1] - ly] == 1:
                         flag = False
-                my_lst.append(self.get_real_pos((0, 0)))
-                mob.run(my_lst)
+                my_lst.append(self.get_real_pos((self.player.rect.x + self.player.rect.h // 2,
+                                                 self.player.rect.y + self.player.rect.w // 2)))
+                #mob.run(my_lst)
+                t1 = threading.Thread(target=mob.run, args=my_lst)
+                t1.start()
 
         self.array = None
 
