@@ -55,8 +55,6 @@ class Map:
         new_player, x, y = None, None, None
         wall = Image.new('RGBA', (self.map[0].__len__() * TILE_SIZE, self.map.__len__() * TILE_SIZE), '#000000')
 
-        self.map[11][10] = 'f'
-
         for y in range(len(self.map)):
             for x in range(len(self.map[y])):
                 if self.map[y][x] == '.':
@@ -229,13 +227,9 @@ class Map:
 
         for mob in mobs_group:
             y, x = self.get_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
-            print(x, y)
-            print('lx, rx::', lx, rx)
-            print('ly, ry::', ly, ry)
-            print('player pos::', self.get_pos((self.player.rect.x + self.player.rect.h // 2,
-                                                 self.player.rect.y + self.player.rect.w // 2)))
             if lx <= x <= rx and ly <= y <= ry:
                 pos: list = [x, y]
+                a, b = self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
                 my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))]
                 print(self.array[pos[0] - lx][pos[1] - ly], '**********************')
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
@@ -260,7 +254,8 @@ class Map:
                 my_lst.append(self.get_real_pos((self.player.rect.x + self.player.rect.h // 2,
                                                  self.player.rect.y + self.player.rect.w // 2)))
                 #mob.run(my_lst)
-                t1 = threading.Thread(target=mob.run, args=my_lst)
+                #mob.set_way(my_lst)
+                t1 = threading.Thread(target=mob.run, args=(my_lst,))
                 t1.start()
 
         self.array = None
@@ -298,7 +293,10 @@ class Leaf:
             self.room_map = [[''] * self.roomSize[1] for _ in range(self.roomSize[0])]
             for i in range(self.roomSize[0]):
                 for j in range(self.roomSize[1]):
-                    self.room_map[i][j] = '.'
+                    if random.randint(0, 100) < 1:
+                        self.room_map[i][j] = 'f'
+                    else:
+                        self.room_map[i][j] = '.'
 
     def split(self) -> bool:
         if self.leftChild is not None or self.rightChild is not None:

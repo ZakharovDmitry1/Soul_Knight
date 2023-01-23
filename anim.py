@@ -40,6 +40,10 @@ class Anim(AnimationSprite):
 class EngryMob(Anim):
     def __init__(self, sheet: str, list_for_sprites: list[list[int]], x: int, y: int, speed: int, hp: int):
         super(EngryMob, self).__init__(sheet, list_for_sprites, x, y, speed, hp)
+        #self.way: list[tuple[int, int]] = []
+
+    def set_way(self, way):
+        self.way = way
 
     def run(self, way: list[tuple[int, int]]):
         print(way)

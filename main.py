@@ -6,6 +6,7 @@ from player import Player
 from camera import Camera
 from settings import *
 import numpy as np
+import time as tm
 
 pygame.init()
 pygame.display.set_caption("Soul_Knight")
@@ -13,12 +14,22 @@ screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
 clock = pygame.time.Clock()
 map = Map((MAP_WIDTH, MAP_HEIGHT))
 player = map.generate_level()
+running: bool = True
+
+def timer_update_mobs(time: int):
+    map.create_way()
+    tm.sleep(time)
+    if running:
+        timer_update_mobs(time)
 
 
 def start_game():
+    global running
     player_group.add(player)
-    running: bool = True
     camera = Camera()
+
+    # t1 = threading.Thread(target=timer_update_mobs, args=(1,))
+    # t1.start()
 
     while running:
         for event in pygame.event.get():
