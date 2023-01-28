@@ -165,7 +165,7 @@ class Map:
         return x, y
 
     def get_pos_for_map(self, pos: tuple[int, int]) -> tuple[int, int]:
-        return pos[0] * TILE_SIZE + TILE_SIZE // 2, pos[1] * TILE_SIZE + TILE_SIZE // 2
+        return pos[0] * TILE_SIZE, pos[1] * TILE_SIZE
 
     def create_way(self):
         y_pos, x_pos = self.get_pos(
@@ -238,7 +238,7 @@ class Map:
                     continue
                 flag = True
                 print("start_while")
-                my_lst.append(self.get_pos_for_map((x, y)))
+                #my_lst.append(self.get_pos_for_map((x, y)))
                 while flag:
                     t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:

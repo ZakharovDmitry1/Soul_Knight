@@ -1,3 +1,4 @@
+import math
 import time
 
 import pygame
@@ -40,23 +41,23 @@ class Anim(AnimationSprite):
 class EngryMob(Anim):
     def __init__(self, sheet: str, list_for_sprites: list[list[int]], x: int, y: int, speed: int, hp: int):
         super(EngryMob, self).__init__(sheet, list_for_sprites, x, y, speed, hp)
-        #self.way: list[tuple[int, int]] = []
+        # self.way: list[tuple[int, int]] = []
 
     def set_way(self, way):
         self.way = way
 
     def run(self, way: list[tuple[int, int]]):
         print(way)
-        x, y = way[0]
-        for i in range(1, way.__len__()):
-            x1, y1 = way[i]
-            self.rect = self.rect.move(x1 - x, y1 - y)
-            x, y = x1, y1
-            time.sleep(0.2)
+        for i in range(0, way.__len__() - 1):
+            dx = (way[i + 1][0] - way[i][0]) * (1 / 50)
+            dy = (way[i + 1][1] - way[i][1]) * (1 / 50)
+            for j in range(1, 51):
+                self.rect = self.rect.move(dx, dy)
+                time.sleep(0.001)
 
 
 class FlyingCreature(EngryMob):
     def __init__(self, x: int, y: int):
         super(FlyingCreature, self).__init__(
-            'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/fly_anim_spritesheet.png',
+            'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/fly_anim_spritesheet2.png',
             [[0] * 4 for _ in range(1)], x, y, 10, 50)
