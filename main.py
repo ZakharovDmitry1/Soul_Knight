@@ -22,9 +22,6 @@ def start_game():
     global running
     player_group.add(player)
     camera = Camera()
-
-    # t1 = threading.Thread(target=timer_update_mobs, args=(1,))
-    # t1.start()
     time_update: float = time.time()
 
     while running:
@@ -40,6 +37,7 @@ def start_game():
 
         for i in mobs_group:
             i.run(TIME_UPDATE_MOBS)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
