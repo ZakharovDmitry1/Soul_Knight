@@ -1,3 +1,4 @@
+import threading
 import time
 
 import PIL
@@ -42,11 +43,15 @@ class Weapon(pygame.sprite.Sprite):
         self.cut_sheet()
         self.image: pygame.Surface = self.frames[self.cur_frame]
 
-    def attak_animation(self):
+    def animation(self):
         for i in range(len(self.frames)):
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = self.frames[self.cur_frame]
             time.sleep(0.1)
+
+    def attak_animation(self):
+        t1 = threading.Thread(target=self.animation())
+        t1.start()
 
     def cut_sheet(self):
         for i in range(self.columns):
@@ -57,10 +62,9 @@ class Weapon(pygame.sprite.Sprite):
     def move(self, dx: int, dy: int):
         self.rect = self.rect.move(dx, dy)
 
-    def attack(self):
-        for i in mobs_group:
-            if pygame.sprite.collide_rect(self, i):
-                i.set_damage(self.damage)
+    def attack(self, target):
+        self.attak_animation()
+        target.set_damage(self.damage)
 
 
 class Stick(Weapon):

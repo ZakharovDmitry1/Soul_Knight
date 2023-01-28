@@ -165,7 +165,7 @@ class Map:
         return x, y
 
     def get_pos_for_map(self, pos: tuple[int, int]) -> tuple[int, int]:
-        return pos[0] * TILE_SIZE, pos[1] * TILE_SIZE
+        return pos[0] * TILE_SIZE + TILE_SIZE // 2, pos[1] * TILE_SIZE + TILE_SIZE // 2
 
     def create_way(self):
         y_pos, x_pos = self.get_pos(
@@ -231,14 +231,11 @@ class Map:
                 pos: list = [x, y]
                 a, b = self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
                 my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))]
-                print(self.array[pos[0] - lx][pos[1] - ly], '**********************')
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
-                    #print(self.array[pos[1] - ly][pos[0] - lx])
-                    print(pos[1] - ly, pos[0] - lx, "//////////////////")
                     continue
                 flag = True
                 print("start_while")
-                #my_lst.append(self.get_pos_for_map((x, y)))
+                my_lst.append(self.get_pos_for_map((x, y)))
                 while flag:
                     t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
@@ -255,8 +252,7 @@ class Map:
                                                  self.player.rect.y + self.player.rect.w // 2)))
                 #mob.run(my_lst)
                 #mob.set_way(my_lst)
-                t1 = threading.Thread(target=mob.run, args=(my_lst,))
-                t1.start()
+                mob.set_way(my_lst)
 
         self.array = None
 

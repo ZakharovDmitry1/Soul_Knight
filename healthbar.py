@@ -1,3 +1,5 @@
+from typing import Any
+
 import pygame.sprite
 
 from functions import load_image
@@ -27,5 +29,8 @@ class Healthbar(pygame.sprite.Sprite):
             self.image = load_image('Roguelike Dungeon - Asset Bundle/HUD/HP/Value/HP_Value_1.png')
         else:
             self.image = load_image('Roguelike Dungeon - Asset Bundle/HUD/HP/Value/HP_Value_0.png')
+
+    def update(self, *args: Any, **kwargs: Any) -> None:
+        self.reset_bar()
 
 

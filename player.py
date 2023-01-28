@@ -1,4 +1,5 @@
 import threading
+import time
 from typing import Any
 
 import pygame
@@ -25,7 +26,7 @@ class Player(Anim):
             TILE_SIZE * pos_x + TILE_SIZE // 4, TILE_SIZE * pos_y + TILE_SIZE // 7)
         self.set_weapon(Stick())
         self.hp_bar: Healthbar = Healthbar(self.hp)
-        self.mob_radius = 30
+        self.mob_radius: int = MOB_RADIUS
 
     def move(self, dx: int, dy: int):
         super(Player, self).move(dx, dy)
@@ -59,6 +60,7 @@ class Player(Anim):
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         super().update()
+        self.hp_bar.health = self.hp
         if self.cur_column == 2:
             self.cur_column = 0
         elif self.cur_column == 3:

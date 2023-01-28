@@ -1,4 +1,5 @@
 import threading
+import time
 
 import pygame as pygame
 from generation_map import Map
@@ -16,12 +17,6 @@ map = Map((MAP_WIDTH, MAP_HEIGHT))
 player = map.generate_level()
 running: bool = True
 
-def timer_update_mobs(time: int):
-    map.create_way()
-    tm.sleep(time)
-    if running:
-        timer_update_mobs(time)
-
 
 def start_game():
     global running
@@ -30,8 +25,22 @@ def start_game():
 
     # t1 = threading.Thread(target=timer_update_mobs, args=(1,))
     # t1.start()
+    time_update: float = time.time()
 
     while running:
+        if time.time() - time_update > MAP_UPDATE_TIME:
+            map.create_way()
+            time_update = time.time()
+            for i in mobs_group:
+                if pygame.sprite.collide_rect(player, i):
+                    i.attack(player)
+                    i.is_moving = False
+                else:
+                    i.is_moving = True
+
+        for i in mobs_group:
+            i.run(TIME_UPDATE_MOBS)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -53,7 +62,8 @@ def start_game():
             running = False
         if keys[pygame.K_q]:
             pygame.display.iconify()
-        #map.create_way()
+        # map.create_way()
+
 
         screen.fill((255, 255, 255))
 
@@ -62,6 +72,7 @@ def start_game():
         player_group.draw(screen)
         weapons_group.draw(screen)
         healthbar_group.draw(screen)
+        healthbar_group.update()
         mobs_group.draw(screen)
 
         clock.tick(FPS)
