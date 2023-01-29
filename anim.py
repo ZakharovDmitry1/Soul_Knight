@@ -1,5 +1,6 @@
 import threading
 import time
+from typing import Any
 
 import pygame
 
@@ -51,29 +52,71 @@ class EngryMob(Anim):
         super(EngryMob, self).__init__(sheet, list_for_sprites, x, y, speed, hp)
         self.way: list[tuple[int, int]] = []
         self.timer_move_way_pos: float = time.time()
+        self.timer_move: float = time.time()
         self.way_pos: int = -1
+        self.count_move: int = 0
+        self.max_count_move: int = 6
 
     def set_way(self, way):
         self.way = way
         self.way_pos = 0
 
-    def run(self, dtime: float):
+    def simple_move(self, dx: float, dy: float):
+        self.rect = self.rect.move(dx, dy)
+
+    def run(self):
         if not self.is_moving:
             return
-        if time.time() - self.timer_move_way_pos > dtime and 0 <= self.way_pos < self.way.__len__() - 1:
-            self.rect = self.rect.move(self.way[self.way_pos + 1][0] - self.way[self.way_pos][0],
-                                       self.way[self.way_pos + 1][1] - self.way[self.way_pos][1])
-            self.timer_move_way_pos = time.time()
+        self.count_move += 1
+        if self.count_move > self.max_count_move:
+            self.count_move = 0
             self.way_pos += 1
-        # dx = self.way[self.way_pos + 1][0] - self.way[self.way_pos][0]
-        # dy = self.way[self.way_pos + 1][1] - self.way[self.way_pos][1]
-        # if time.time() - self.timer_move > dtime / 10 and 0 <= self.way_pos < self.way.__len__() - 1:
-        #     self.rect = self.rect.move(self.way[self.way_pos + 1][0] - self.way[self.way_pos][0],
-        #                                self.way[self.way_pos + 1][1] - self.way[self.way_pos][1])
+        if 0 <= self.way_pos < self.way.__len__() - 1:
+            dx = self.way[self.way_pos + 1][0] - self.way[self.way_pos][0]
+            dy = self.way[self.way_pos + 1][1] - self.way[self.way_pos][1]
+            self.simple_move(dx / self.max_count_move, dy / self.max_count_move)
+
+class AnimationMoveAnim(EngryMob):
+    def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, speed: int = 10, hp: int = 100):
+        super(AnimationMoveAnim, self).__init__(sheet, list_for_sprites, x, y, speed, hp)
+
+    def update(self, *args: Any, **kwargs: Any) -> None:
+        super().update()
+        if self.cur_column == 2:
+            self.cur_column = 0
+        elif self.cur_column == 3:
+            self.cur_column = 1
+
+    def simple_move(self, dx: int, dy: int):
+        super().simple_move(dx, dy)
+        if self.weapon is not None:
+            self.weapon.move(dx, dy)
+        if dx > 0:
+            self.cur_column = 3
+        elif dx < 0:
+            self.cur_column = 2
+        elif dy != 0:
+            if self.cur_column == 0:
+                self.cur_column = 2
+            if self.cur_column == 1:
+                self.cur_column = 3
+
+        if pygame.sprite.spritecollideany(self, walls_group):
+            super(AnimationMoveAnim, self).simple_move(-dx,-dy)
+            if self.weapon is not None:
+                self.weapon.move(-dx, -dy)
 
 
 class FlyingCreature(EngryMob):
     def __init__(self, x: int, y: int):
         super(FlyingCreature, self).__init__(
             'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/fly_anim_spritesheet2.png',
-            [[0] * 4 for _ in range(1)], x, y, 10, 50)
+            [[0] * 4 for _ in range(1)], x, y, speed=10, hp=50)
+
+class GoblinCreature(AnimationMoveAnim):
+    def __init__(self, x: int, y: int):
+        super(GoblinCreature, self).__init__(
+            'v1.1 dungeon crawler 16X16 pixel pack/enemies/goblin/goblin.png',
+            [[0] * 6 for _ in range(4)], x, y, speed=10, hp=50)
+
+

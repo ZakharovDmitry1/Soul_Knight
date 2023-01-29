@@ -69,7 +69,8 @@ class Weapon(pygame.sprite.Sprite):
 
 class Stick(Weapon):
     def __init__(self):
-        super(Stick, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', 11, 4, 10, 50, 0.5, 30)
+        super(Stick, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', rows=11, columns=4, column=10,
+                                    width_image=50, cooldown=0.5, damage=30)
         pass
 
 

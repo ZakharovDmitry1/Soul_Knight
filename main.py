@@ -16,15 +16,21 @@ clock = pygame.time.Clock()
 map = Map((MAP_WIDTH, MAP_HEIGHT))
 player = map.generate_level()
 running: bool = True
+time_move_mobs: float = time.time()
 
 
 def start_game():
-    global running
+    global running, time_move_mobs
     player_group.add(player)
     camera = Camera()
     time_update: float = time.time()
 
     while running:
+        if time.time() - time_move_mobs >= TIME_MOVE_MOBS:
+            time_move_mobs = time.time()
+            for i in mobs_group:
+                i.run()
+
         if time.time() - time_update > MAP_UPDATE_TIME:
             map.create_way()
             time_update = time.time()
@@ -35,8 +41,8 @@ def start_game():
                 else:
                     i.is_moving = True
 
-        for i in mobs_group:
-            i.run(TIME_UPDATE_MOBS)
+        # for i in mobs_group:
+        #     i.run(TIME_UPDATE_MOBS)
 
 
         for event in pygame.event.get():

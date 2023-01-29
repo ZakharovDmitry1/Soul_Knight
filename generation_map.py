@@ -70,6 +70,13 @@ class Map:
                         'RGBA').resize((TILE_SIZE, TILE_SIZE))
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
+                elif self.map[y][x] == 'g':
+                    mobs_group.add(GoblinCreature(x, y))
+                    newImage = Image.open(
+                        f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
+                        'RGBA').resize((TILE_SIZE, TILE_SIZE))
+                    wall.paste(newImage,
+                               (x * TILE_SIZE, y * TILE_SIZE))
                 elif self.map[y][x] == '@':
                     newImage = Image.open(
                         f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
@@ -234,8 +241,6 @@ class Map:
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
                     continue
                 flag = True
-                print("start_while")
-                my_lst.append(self.get_pos_for_map((x, y)))
                 while flag:
                     t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
@@ -289,8 +294,10 @@ class Leaf:
             self.room_map = [[''] * self.roomSize[1] for _ in range(self.roomSize[0])]
             for i in range(self.roomSize[0]):
                 for j in range(self.roomSize[1]):
-                    if random.randint(0, 100) < 1:
+                    if random.randint(0, 100) == 0:
                         self.room_map[i][j] = 'f'
+                    elif random.randint(0, 100) == 1:
+                        self.room_map[i][j] = 'g'
                     else:
                         self.room_map[i][j] = '.'
 

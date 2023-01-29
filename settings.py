@@ -12,12 +12,13 @@ MAP_HEIGHT: int = 100
 MIN_ROOM_SIZE: int = 15
 MIN_LEAF_SIZE: int = 20
 
-MAP_UPDATE_TIME: float = 2
+MAP_UPDATE_TIME: float = 0.5
 TIME_UPDATE_MOBS: float = 0.2
 
 FPS: int = 50
 
 MOB_RADIUS: int = 20
+TIME_MOVE_MOBS: float = 0.001
 
 MONITOR_WIDTH: int = get_monitors()[0].width
 MONITOR_HEIGHT: int = get_monitors()[0].height
