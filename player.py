@@ -17,6 +17,8 @@ class Player(Anim):
         self.real_pos_x: int = pos_x * TILE_SIZE
         self.real_pos_y: int = pos_y * TILE_SIZE
 
+        self.defence = DEFENCE
+
         self.columns: int = 4
         self.rows: int = 2
 
@@ -27,6 +29,8 @@ class Player(Anim):
         self.set_weapon(Stick())
         self.hp_bar: Healthbar = Healthbar(self.hp)
         self.mob_radius: int = MOB_RADIUS
+
+        self.time_damage: float = 0
 
     def move(self, dx: int, dy: int):
         super(Player, self).move(dx, dy)
@@ -58,8 +62,30 @@ class Player(Anim):
             if pygame.sprite.collide_rect(self.weapon, i):
                 i.set_damage(self.weapon.damage)
 
+    def set_damage(self, hp: int):
+        self.time_damage = time.time()
+        self.hp_bar.set_damage(hp)
+        if self.defence > 0:
+            self.defence -= hp
+            if self.defence < 0:
+                self.defence = 0
+        else:
+            self.hp -= hp
+
+    def healing(self):
+        self.defence += self.hp_bar.defence.full_defence // 5
+        if self.defence > DEFENCE:
+            self.defence = DEFENCE
+        self.hp_bar.defence.defence += self.hp_bar.defence.full_defence // 5
+        if self.hp_bar.defence.defence > DEFENCE:
+            self.hp_bar.defence.defence = DEFENCE
+        self.hp_bar.defence.reset_bar()
+
     def update(self, *args: Any, **kwargs: Any) -> None:
         super().update()
+        if time.time() - self.time_damage > 5:
+            self.healing()
+            self.time_damage = time.time()
         self.hp_bar.health = self.hp
         if self.cur_column == 2:
             self.cur_column = 0

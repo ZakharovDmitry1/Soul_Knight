@@ -20,6 +20,8 @@ FPS: int = 50
 MOB_RADIUS: int = 20
 TIME_MOVE_MOBS: float = 0.001
 
+DEFENCE: int = 400
+
 MONITOR_WIDTH: int = get_monitors()[0].width
 MONITOR_HEIGHT: int = get_monitors()[0].height
 
@@ -28,6 +30,6 @@ tiles_group: pygame.sprite.Group = pygame.sprite.Group()
 walls_group: pygame.sprite.Group = pygame.sprite.Group()
 player_group: pygame.sprite.Group = pygame.sprite.Group()
 weapons_group: pygame.sprite.Group = pygame.sprite.Group()
-healthbar_group: pygame.sprite.Group = pygame.sprite.Group()
+bar_group: pygame.sprite.Group = pygame.sprite.Group()
 mobs_group: pygame.sprite.Group = pygame.sprite.Group()
 #engry_mobs_group: pygame.sprite.Group = pygame.sprite.Group()

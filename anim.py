@@ -76,6 +76,7 @@ class EngryMob(Anim):
             dy = self.way[self.way_pos + 1][1] - self.way[self.way_pos][1]
             self.simple_move(dx / self.max_count_move, dy / self.max_count_move)
 
+
 class AnimationMoveAnim(EngryMob):
     def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, speed: int = 10, hp: int = 100):
         super(AnimationMoveAnim, self).__init__(sheet, list_for_sprites, x, y, speed, hp)
@@ -102,7 +103,7 @@ class AnimationMoveAnim(EngryMob):
                 self.cur_column = 3
 
         if pygame.sprite.spritecollideany(self, walls_group):
-            super(AnimationMoveAnim, self).simple_move(-dx,-dy)
+            super(AnimationMoveAnim, self).simple_move(-dx, -dy)
             if self.weapon is not None:
                 self.weapon.move(-dx, -dy)
 
@@ -113,10 +114,9 @@ class FlyingCreature(EngryMob):
             'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/fly_anim_spritesheet2.png',
             [[0] * 4 for _ in range(1)], x, y, speed=10, hp=50)
 
+
 class GoblinCreature(AnimationMoveAnim):
     def __init__(self, x: int, y: int):
         super(GoblinCreature, self).__init__(
             'v1.1 dungeon crawler 16X16 pixel pack/enemies/goblin/goblin.png',
             [[0] * 6 for _ in range(4)], x, y, speed=10, hp=50)
-
-

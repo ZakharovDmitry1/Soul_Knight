@@ -2,12 +2,10 @@ import threading
 import time
 
 import pygame as pygame
+
 from generation_map import Map
-from player import Player
 from camera import Camera
 from settings import *
-import numpy as np
-import time as tm
 
 pygame.init()
 pygame.display.set_caption("Soul_Knight")
@@ -75,8 +73,8 @@ def start_game():
         all_sprites.update()
         player_group.draw(screen)
         weapons_group.draw(screen)
-        healthbar_group.draw(screen)
-        healthbar_group.update()
+        bar_group.draw(screen)
+        bar_group.update()
         mobs_group.draw(screen)
 
         clock.tick(FPS)
