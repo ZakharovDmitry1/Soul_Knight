@@ -9,7 +9,7 @@ from settings import *
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, texture: Surface, start_pos: tuple[int, int], end_pos: tuple[int, int], speed: int):
+    def __init__(self, texture: Surface, start_pos: tuple[int, int], end_pos: tuple[int, int], speed: int, resize=-1):
         super(Bullet, self).__init__(bullets_group, all_sprites)
         self.image: Surface = texture
         self.rect: pygame.rect.Rect = self.image.get_rect().move(start_pos)
