@@ -3,6 +3,8 @@ import time
 
 import pygame as pygame
 
+from bullets import Bullet
+from functions import load_image
 from generation_map import Map
 from camera import Camera
 from settings import *
@@ -39,6 +41,8 @@ def start_game():
                 else:
                     i.is_moving = True
 
+        player.weapon.attak_animation()
+
         # for i in mobs_group:
         #     i.run(TIME_UPDATE_MOBS)
 
@@ -47,9 +51,13 @@ def start_game():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                player.attak()
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                map.create_way()
+                player.player_attack()
+                Bullet(load_image('Roguelike Dungeon - Asset Bundle/Props/Barrel_0.png'),
+                       (player.rect.x, player.rect.y), event.pos, 10)
+
+            if event.type == pygame.MOUSEMOTION:
+                player.weapon.set_rotate(player.weapon.rect.center, event.pos)
+                #print(player.weapon.rect.center)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -71,11 +79,13 @@ def start_game():
 
         all_sprites.draw(screen)
         all_sprites.update()
+        walls_group.draw(screen)
         player_group.draw(screen)
         weapons_group.draw(screen)
         bar_group.draw(screen)
         bar_group.update()
         mobs_group.draw(screen)
+        bullets_group.draw(screen)
 
         clock.tick(FPS)
         camera.update(player)

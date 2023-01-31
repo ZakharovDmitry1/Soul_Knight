@@ -1,5 +1,7 @@
+import math
 import threading
 import time
+from typing import Any
 
 import PIL
 import pygame
@@ -25,6 +27,11 @@ class Weapon(pygame.sprite.Sprite):
         self.x = None
         self.y = None
 
+        self.angle: float = 0
+        self.reflection: bool = False
+
+        self.attack_animation = False
+
         self.width_image: int = width_image
         self.cooldown: float = cooldown
         self.damage: int = damage
@@ -32,6 +39,8 @@ class Weapon(pygame.sprite.Sprite):
 
         self.rows: int = rows
         self.columns: int = columns
+
+        self.time_animation: float = time.time()
 
         self.column: int = column
 
@@ -43,15 +52,27 @@ class Weapon(pygame.sprite.Sprite):
         self.cut_sheet()
         self.image: pygame.Surface = self.frames[self.cur_frame]
 
-    def animation(self):
-        for i in range(len(self.frames)):
-            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = self.frames[self.cur_frame]
-            time.sleep(0.1)
+        self.vec2: tuple[int, int] = (0, 0)
 
     def attak_animation(self):
-        t1 = threading.Thread(target=self.animation())
-        t1.start()
+        if not self.attack_animation:
+            return
+        if time.time() - self.time_animation < 0.1:
+            return
+
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        if self.cur_frame == 0:
+            self.attack_animation = False
+            return
+        if self.vec2[1] > 0 and self.angle > 0:
+            self.angle *= -1
+        if self.vec2[0] < 0:
+            self.image = pygame.transform.rotate(self.frames[self.cur_frame], -self.angle)
+            self.image = pygame.transform.flip(self.image, False, True)
+        else:
+            self.image = pygame.transform.rotate(self.frames[self.cur_frame], self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+        self.time_animation = time.time()
 
     def cut_sheet(self):
         for i in range(self.columns):
@@ -62,9 +83,43 @@ class Weapon(pygame.sprite.Sprite):
     def move(self, dx: int, dy: int):
         self.rect = self.rect.move(dx, dy)
 
-    def attack(self, target):
-        self.attak_animation()
-        target.set_damage(self.damage)
+    def blitRotate(self, angle: float):
+        w, h = self.image.get_size()
+        box = [pygame.math.Vector2(p) for p in [(0, 0), (w, 0), (w, -h), (0, -h)]]
+        box_rotate = [p.rotate(angle) for p in box]
+        min_box = (min(box_rotate, key=lambda p: p[0])[0], min(box_rotate, key=lambda p: p[1])[1])
+        max_box = (max(box_rotate, key=lambda p: p[0])[0], max(box_rotate, key=lambda p: p[1])[1])
+        self.rect.x = self.rect.x + min_box[0]
+        self.rect.y = self.rect.y
+        # self.rect = pygame.Rect(self.rect.center[0] + min_box[0], self.rect.center[1] - max_box[1]self.rect.center[1] - max_box[1])
+
+        self.image = pygame.transform.rotate(self.frames[self.cur_frame], angle)
+        # image_rect = self.image.get_rect(topleft=(
+        #         self.rect.centerx - self.rect.bottom,
+        #         self.rect.centery - self.rect.right))
+        # offset_center_to_pivot = pygame.math.Vector2(self.rect.center) - image_rect.center
+        #
+        # rotated_offset = offset_center_to_pivot.rotate(-angle)
+        # rotated_image_center = (self.rect.centerx - rotated_offset.x,
+        #                         self.rect.centery - rotated_offset.y)
+        # self.image = pygame.transform.rotate(self.image, angle)
+        # self.rect = self.image.get_rect(center=rotated_image_center)
+
+    def set_rotate(self, pos: tuple[float, float], target_pos: tuple[int, int]):
+        vec1: tuple = (1, 0)
+        vec2: tuple = (target_pos[0] - pos[0], target_pos[1] - pos[1])
+        self.vec2 = vec2
+        cos: float = vec2[0] / (math.sqrt(vec2[0] ** 2 + vec2[1] ** 2))
+        angle: float = math.degrees(math.acos(cos))
+        self.angle = angle
+        if vec2[1] > 0:
+            angle *= -1
+        if vec2[0] < 0:
+            self.image = pygame.transform.rotate(self.frames[self.cur_frame], -angle)
+            self.image = pygame.transform.flip(self.image, False, True)
+        else:
+            self.image = pygame.transform.rotate(self.frames[self.cur_frame], angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
 
 
 class Stick(Weapon):
@@ -72,6 +127,10 @@ class Stick(Weapon):
         super(Stick, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', rows=11, columns=4, column=10,
                                     width_image=50, cooldown=0.5, damage=30)
         pass
+
+    def attack(self, target: tuple[int, int]):
+        pass
+
 
 
 class Bow(Weapon):
@@ -86,4 +145,8 @@ class Sword(Weapon):
 
 class Gun(Weapon):
     def __init__(self):
-        super(Gun, self).__init__()
+        super(Gun, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', rows=11, columns=8, column=5,
+                                  width_image=50, cooldown=0.5, damage=30)
+
+    def update(self, *args: Any, **kwargs: Any) -> None:
+        ...

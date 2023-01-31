@@ -12,13 +12,13 @@ MAP_HEIGHT: int = 100
 MIN_ROOM_SIZE: int = 15
 MIN_LEAF_SIZE: int = 20
 
-MAP_UPDATE_TIME: float = 0.5
+MAP_UPDATE_TIME: float = 1
 TIME_UPDATE_MOBS: float = 0.2
 
-FPS: int = 50
+FPS: int = 70
 
-MOB_RADIUS: int = 20
-TIME_MOVE_MOBS: float = 0.001
+MOB_RADIUS: int = 15
+TIME_MOVE_MOBS: float = 0.01
 
 DEFENCE: int = 400
 
@@ -32,4 +32,5 @@ player_group: pygame.sprite.Group = pygame.sprite.Group()
 weapons_group: pygame.sprite.Group = pygame.sprite.Group()
 bar_group: pygame.sprite.Group = pygame.sprite.Group()
 mobs_group: pygame.sprite.Group = pygame.sprite.Group()
+bullets_group: pygame.sprite.Group = pygame.sprite.Group()
 #engry_mobs_group: pygame.sprite.Group = pygame.sprite.Group()

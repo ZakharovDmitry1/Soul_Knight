@@ -7,7 +7,7 @@ import pygame
 from anim import Anim
 from healthbar import Healthbar
 from settings import *
-from weapons import Stick
+from weapons import *
 
 
 class Player(Anim):
@@ -26,7 +26,7 @@ class Player(Anim):
         super(Player, self).__init__(self.sheet, self.list_for_sprites, pos_x, pos_y, speed, hp)
         self.rect = self.image.get_rect().move(
             TILE_SIZE * pos_x + TILE_SIZE // 4, TILE_SIZE * pos_y + TILE_SIZE // 7)
-        self.set_weapon(Stick())
+        self.set_weapon(Gun())
         self.hp_bar: Healthbar = Healthbar(self.hp)
         self.mob_radius: int = MOB_RADIUS
 
@@ -55,9 +55,9 @@ class Player(Anim):
             if self.weapon is not None:
                 self.weapon.move(-dx * self.speed, -dy * self.speed)
 
-    def attak(self):
-        t1 = threading.Thread(target=self.weapon.attak_animation)
-        t1.start()
+    def player_attack(self):
+        self.weapon.attack_animation = True
+        self.weapon.attak_animation()
         for i in mobs_group:
             if pygame.sprite.collide_rect(self.weapon, i):
                 i.set_damage(self.weapon.damage)

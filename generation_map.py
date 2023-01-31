@@ -63,6 +63,14 @@ class Map:
                         'RGBA').resize((TILE_SIZE, TILE_SIZE))
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
+                elif self.map[y][x] == 'b':
+                    walls_group.add(
+                        Tile(f'Roguelike Dungeon - Asset Bundle/Props/Barrel_{random.randint(0, 3)}.png', x, y))
+                    newImage = Image.open(
+                        f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
+                        'RGBA').resize((TILE_SIZE, TILE_SIZE))
+                    wall.paste(newImage,
+                               (x * TILE_SIZE, y * TILE_SIZE))
                 elif self.map[y][x] == 'f':
                     mobs_group.add(FlyingCreature(x, y))
                     newImage = Image.open(
@@ -202,7 +210,7 @@ class Map:
 
         for i in range(lx, rx + 1):
             for j in range(ly, ry + 1):
-                if self.map[i][j] == '#':
+                if self.map[i][j] == '#' or self.map[i][j] == 'b':
                     self.array[i - lx + 1][j - ly + 1] = -1
 
         for i in range(ry - ly + 3):
@@ -294,12 +302,27 @@ class Leaf:
             self.room_map = [[''] * self.roomSize[1] for _ in range(self.roomSize[0])]
             for i in range(self.roomSize[0]):
                 for j in range(self.roomSize[1]):
-                    if random.randint(0, 100) == 0:
+                    self.room_map[i][j] = '.'
+            for i in range(self.roomSize[0]):
+                for j in range(self.roomSize[1]):
+                    if 1 < i < self.roomSize[0] - 2 and 1 < j < self.roomSize[1] - 2 and random.randint(0, 120) == 0:
+                        k = random.randint(0, 3)
+                        if k == 0:
+                            self.room_map[i][j] = self.room_map[i + 1][j] = self.room_map[i][j + 1] = 'b'
+                        if k == 1:
+                            self.room_map[i - 1][j] = self.room_map[i + 1][j] = self.room_map[i][j + 1] = 'b'
+                        if k == 2:
+                            self.room_map[i - 1][j] = self.room_map[i][j] = self.room_map[i - 1][j + 1] = 'b'
+                        if k == 3:
+                            self.room_map[i][j - 1] = self.room_map[i + 1][j - 1] = self.room_map[i + 1][j + 1] = 'b'
+
+
+            for i in range(self.roomSize[0]):
+                for j in range(self.roomSize[1]):
+                    if random.randint(0, 100) == 0 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'f'
-                    elif random.randint(0, 100) == 1:
+                    elif random.randint(0, 100) == 1 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'g'
-                    else:
-                        self.room_map[i][j] = '.'
 
     def split(self) -> bool:
         if self.leftChild is not None or self.rightChild is not None:
