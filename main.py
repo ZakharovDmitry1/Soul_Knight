@@ -51,9 +51,7 @@ def start_game():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                player.player_attack()
-                Bullet(load_image('Roguelike Dungeon - Asset Bundle/Props/Barrel_0.png'),
-                       (player.rect.x, player.rect.y), event.pos, 10)
+                player.player_attack(event.pos)
 
             if event.type == pygame.MOUSEMOTION:
                 player.weapon.set_rotate(player.weapon.rect.center, event.pos)
@@ -86,6 +84,7 @@ def start_game():
         bar_group.update()
         mobs_group.draw(screen)
         bullets_group.draw(screen)
+        dead_enemy_group.draw(screen)
 
         clock.tick(FPS)
         camera.update(player)

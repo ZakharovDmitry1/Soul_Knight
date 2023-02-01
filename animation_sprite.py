@@ -8,7 +8,7 @@ import pygame.sprite
 from PIL import Image
 
 from functions import load_image
-from settings import all_sprites, tiles_group, TILE_SIZE
+from settings import all_sprites, tiles_group, TILE_SIZE, TIME_UPDATE_MOBS_ANIMATION
 
 
 class AnimationSprite(pygame.sprite.Sprite):
@@ -43,12 +43,14 @@ class AnimationSprite(pygame.sprite.Sprite):
                 self.list_for_sprites[j][i] = sheet.subsurface(pygame.Rect(
                     frame_location, self.rect.size))
 
-    def update(self, *args: Any, **kwargs: Any) -> None:
+    def update(self, *args: Any, **kwargs: Any) -> bool:
         # print(self.timer - time.perf_counter())
-        if abs(self.timer - time.perf_counter()) > 0.07:
+        if abs(self.timer - time.perf_counter()) > TIME_UPDATE_MOBS_ANIMATION:
             self.cur_frame = (self.cur_frame + 1) % len(self.list_for_sprites[self.cur_column])
             self.image = self.list_for_sprites[self.cur_column][self.cur_frame]
             self.timer: float = time.perf_counter()
+            return True
+        return False
 
 
 class Tile(pygame.sprite.Sprite):

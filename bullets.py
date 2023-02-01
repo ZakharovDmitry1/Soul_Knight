@@ -9,10 +9,20 @@ from settings import *
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, texture: Surface, start_pos: tuple[int, int], end_pos: tuple[int, int], speed: int, resize=-1):
+    def __init__(self, texture: Surface, start_pos: tuple[int, int], end_pos: tuple[int, int], speed: int, damage: int,
+                 rotate: float = 0, resize=-1):
+        self.damage: int = damage
         super(Bullet, self).__init__(bullets_group, all_sprites)
-        self.image: Surface = texture
-        self.rect: pygame.rect.Rect = self.image.get_rect().move(start_pos)
+
+        if resize != -1:
+            self.image: Surface = pygame.transform.rotate(pygame.transform.scale(texture, (resize, resize)), rotate)
+        else:
+            self.image: Surface = pygame.transform.rotate(texture, rotate)
+
+
+
+        self.rect: pygame.rect.Rect = self.image.get_rect()
+        self.rect.move_ip(start_pos)
 
         self.update_time: float = 0.03 / speed
         self.current_time: float = time.time()
@@ -22,10 +32,11 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         if time.time() - self.current_time > self.update_time:
-            self.rect.move_ip(self.dx * 7, self.dy * 7)
+            self.rect.move_ip(self.dx * 20, self.dy * 20)
             self.current_time = time.time()
             for i in mobs_group:
                 if pygame.sprite.collide_rect(self, i):
-                    i.kill()
+                    i.set_damage(self.damage)
+                    self.kill()
             if pygame.sprite.spritecollideany(self, walls_group):
                 self.kill()

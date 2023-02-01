@@ -4,6 +4,7 @@ from typing import Any
 
 import pygame
 
+from Enemy_dead import EnemyDead
 from animation_sprite import AnimationSprite
 from functions import Pair
 from weapons import Weapon
@@ -42,6 +43,8 @@ class Anim(AnimationSprite):
         self.weapon.move(self.rect.x + TILE_SIZE * 4 // 6, self.rect.y + TILE_SIZE * 4 // 6)
 
     def kill(self) -> None:
+        print('create EnemyDead')
+        dead_enemy_group.add(EnemyDead(self.rect.centerx, self.rect.centery))
         super(Anim, self).kill()
         if self.weapon is not None:
             self.weapon.kill()

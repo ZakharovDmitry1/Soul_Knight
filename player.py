@@ -55,12 +55,10 @@ class Player(Anim):
             if self.weapon is not None:
                 self.weapon.move(-dx * self.speed, -dy * self.speed)
 
-    def player_attack(self):
+    def player_attack(self, target: tuple[int, int]):
         self.weapon.attack_animation = True
         self.weapon.attak_animation()
-        for i in mobs_group:
-            if pygame.sprite.collide_rect(self.weapon, i):
-                i.set_damage(self.weapon.damage)
+        self.weapon.attack(target)
 
     def set_damage(self, hp: int):
         self.time_damage = time.time()
