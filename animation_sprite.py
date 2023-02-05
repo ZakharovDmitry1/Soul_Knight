@@ -54,7 +54,8 @@ class AnimationSprite(pygame.sprite.Sprite):
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, tile_type: str, pos_x: int, pos_y: int, colorkey: tuple = (0, 0, 0), resize: int = -1):
+    def __init__(self, tile_type: str, pos_x: int, pos_y: int, colorkey: tuple = (0, 0, 0), resize: int = -1,
+                 set_tile_size: bool = False):
         super().__init__(tiles_group, all_sprites)
         self.image = load_image(tile_type)
         self.image.set_colorkey(colorkey)
@@ -63,5 +64,8 @@ class Tile(pygame.sprite.Sprite):
             newImage.save('cache/wall.png')
             self.image = load_image('cache/wall.png')
             self.image.set_colorkey(colorkey)
-        self.rect = self.image.get_rect().move(
-            TILE_SIZE * pos_x, TILE_SIZE * pos_y)
+        if set_tile_size:
+            self.rect = pygame.rect.Rect(TILE_SIZE * pos_x, TILE_SIZE * pos_y, TILE_SIZE, TILE_SIZE)
+        else:
+            self.rect = self.image.get_rect().move(
+                TILE_SIZE * pos_x, TILE_SIZE * pos_y)

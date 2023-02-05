@@ -65,7 +65,7 @@ class Map:
                                (x * TILE_SIZE, y * TILE_SIZE))
                 elif self.map[y][x] == 'b':
                     walls_group.add(
-                        Tile(f'Roguelike Dungeon - Asset Bundle/Props/Barrel_{random.randint(0, 3)}.png', x, y))
+                        Tile(f'Roguelike Dungeon - Asset Bundle/Props/Barrel_{random.randint(0, 3)}.png', x, y, (0, 0, 0), -1, True))
                     newImage = Image.open(
                         f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
                         'RGBA').resize((TILE_SIZE, TILE_SIZE))
@@ -241,7 +241,7 @@ class Map:
         #     print()
 
         for mob in mobs_group:
-            y, x = self.get_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
+            y, x = self.get_pos((mob.rect.x + mob.rect.h, mob.rect.y + mob.rect.w))
             if lx <= x <= rx and ly <= y <= ry:
                 pos: list = [x, y]
                 a, b = self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))

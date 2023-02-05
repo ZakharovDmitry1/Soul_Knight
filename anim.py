@@ -14,6 +14,9 @@ from settings import *
 class Anim(AnimationSprite):
     def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, speed: int = 10, hp: int = 100):
         super(Anim, self).__init__(sheet, list_for_sprites, x, y, TILE_SIZE * 3 // 2)
+        self.rect.move_ip(self.rect.size[0] - TILE_SIZE, (self.rect.size[1] - TILE_SIZE) // 2)
+        self.START_POS_X += self.rect.size[0] - TILE_SIZE
+        self.START_POS_Y += (self.rect.size[1] - TILE_SIZE) // 2
         self.rect.size = (TILE_SIZE, TILE_SIZE)
         self.is_moving: bool = True
         self.speed: int = speed
@@ -67,6 +70,10 @@ class EngryMob(Anim):
 
     def simple_move(self, dx: float, dy: float):
         self.rect = self.rect.move(dx, dy)
+        # if pygame.sprite.spritecollideany(self, walls_group):
+        #     self.rect.move_ip(-dx, -dy)
+        #     if self.weapon is not None:
+        #         self.weapon.move(-dx, -dy)
 
     def run(self):
         if not self.is_moving:
@@ -105,11 +112,6 @@ class AnimationMoveAnim(EngryMob):
                 self.cur_column = 2
             if self.cur_column == 1:
                 self.cur_column = 3
-
-        if pygame.sprite.spritecollideany(self, walls_group):
-            super(AnimationMoveAnim, self).simple_move(-dx, -dy)
-            if self.weapon is not None:
-                self.weapon.move(-dx, -dy)
 
 
 class FlyingCreature(EngryMob):
