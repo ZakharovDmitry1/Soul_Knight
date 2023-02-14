@@ -16,7 +16,7 @@ MAP_UPDATE_TIME: float = 1
 TIME_UPDATE_MOBS: float = 0.2
 TIME_UPDATE_MOBS_ANIMATION: float = 0.07
 
-FPS: int = 70
+FPS: int = 40
 
 MOB_RADIUS: int = 25
 TIME_MOVE_MOBS: float = 0.01

@@ -180,7 +180,7 @@ class Map:
         return x, y
 
     def get_pos_for_map(self, pos: tuple[int, int]) -> tuple[int, int]:
-        return pos[0] * TILE_SIZE + TILE_SIZE // 2, pos[1] * TILE_SIZE + TILE_SIZE // 2
+        return pos[0] * TILE_SIZE, pos[1] * TILE_SIZE
 
     def create_way(self):
         y_pos, x_pos = self.get_pos(
@@ -235,17 +235,14 @@ class Map:
                     self.array[new_x][new_y] = self.array[pos[0]][pos[1]] + 1
                     my_queue.put((new_x, new_y))
 
-        # for i in self.array:
-        #     for j in i:
-        #         print(j, end='\t')
-        #     print()
-
         for mob in mobs_group:
-            y, x = self.get_pos((mob.rect.x + mob.rect.h, mob.rect.y + mob.rect.w))
+            y, x = self.get_pos((mob.rect.x + TILE_SIZE, mob.rect.y + TILE_SIZE))
+            y1, x1 = self.get_pos((mob.rect.x, mob.rect.y))
+            if not (lx <= x <= rx and ly <= y <= ry) or not (lx <= x1 <= rx and ly <= y1 <= ry):
+                continue
             if lx <= x <= rx and ly <= y <= ry:
                 pos: list = [x, y]
-                a, b = self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
-                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))]
+                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x, mob.rect.y))]
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
                     continue
                 flag = True
@@ -253,7 +250,6 @@ class Map:
                     t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                         new_y, new_x = pos[1] + i[1], pos[0] + i[0]
-                        #print(self.array[new_x][new_y])
                         if self.array[new_x - lx][new_y - ly] == self.array[pos[0] - lx][pos[1] - ly] - 1:
                             my_lst.append(self.get_pos_for_map((new_y, new_x)))
                             pos[0] = new_x
@@ -261,10 +257,8 @@ class Map:
                             break
                     if self.array[pos[0] - lx][pos[1] - ly] == 1:
                         flag = False
-                my_lst.append(self.get_real_pos((self.player.rect.x + self.player.rect.h // 2,
-                                                 self.player.rect.y + self.player.rect.w // 2)))
-                #mob.run(my_lst)
-                #mob.set_way(my_lst)
+                my_lst.append(self.get_real_pos((self.player.rect.x,
+                                                 self.player.rect.y)))
                 mob.set_way(my_lst)
 
         self.array = None
@@ -317,8 +311,8 @@ class Leaf:
                             self.room_map[i][j - 1] = self.room_map[i + 1][j - 1] = self.room_map[i + 1][j + 1] = 'b'
 
 
-            for i in range(self.roomSize[0]):
-                for j in range(self.roomSize[1]):
+            for i in range(1, self.roomSize[0] - 1):
+                for j in range(1, self.roomSize[1] - 1):
                     if random.randint(0, 100) == 0 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'f'
                     elif random.randint(0, 100) == 1 and self.room_map[i][j] == '.':

@@ -1,0 +1,11 @@
+time
+typing
+pygame
+PIL
+random
+queue
+numpy
+threading
+sys
+screeninfo
+PyQt5.QtWidgets

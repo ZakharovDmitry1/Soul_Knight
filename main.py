@@ -1,26 +1,60 @@
+import sys
 import threading
 import time
 
 import pygame as pygame
+from PyQt5.QtGui import QPixmap
 
 from bullets import Bullet
 from functions import load_image
 from generation_map import Map
 from camera import Camera
 from settings import *
+from PyQt5.QtWidgets import *
 
-pygame.init()
-pygame.display.set_caption("Soul_Knight")
-screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
-clock = pygame.time.Clock()
-map = Map((MAP_WIDTH, MAP_HEIGHT))
-player = map.generate_level()
-running: bool = True
-time_move_mobs: float = time.time()
+
+class Example(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setFixedSize(MONITOR_WIDTH, MONITOR_HEIGHT)
+        self.setWindowTitle('Заставка')
+        self.btn = QPushButton('Начать игру', self)
+        self.btn.resize(200, 100)
+        self.label = QLabel()
+        self.label.resize(MONITOR_WIDTH, MONITOR_HEIGHT)
+        pixmap = QPixmap()
+        pixmap.load(r'C:\Users\79082\PycharmProjects\Soul_Knight\main_image.png')
+        self.label.setPixmap(pixmap)
+        self.btn.move(MONITOR_WIDTH // 2 - 100, MONITOR_HEIGHT // 4 * 3 - 50)
+        self.btn.clicked.connect(self.count)
+
+    def count(self):
+        self.close()
+
+
+def start_main_window():
+    app = QApplication(sys.argv)
+    ex = Example()
+    ex.show()
+    app.exec_()
+
+
+start_main_window()
 
 
 def start_game():
-    global running, time_move_mobs
+    pygame.init()
+    pygame.display.set_caption("Soul_Knight")
+    screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
+    clock = pygame.time.Clock()
+    map = Map((MAP_WIDTH, MAP_HEIGHT))
+    player = map.generate_level()
+    running: bool = True
+    time_move_mobs: float = time.time()
+    running, time_move_mobs
     player_group.add(player)
     camera = Camera()
     time_update: float = time.time()
@@ -40,12 +74,13 @@ def start_game():
                     i.is_moving = False
                 else:
                     i.is_moving = True
+            if player.hp <= 0:
+                return
 
         player.weapon.attak_animation()
 
         # for i in mobs_group:
         #     i.run(TIME_UPDATE_MOBS)
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -55,7 +90,7 @@ def start_game():
 
             if event.type == pygame.MOUSEMOTION:
                 player.weapon.set_rotate(player.weapon.rect.center, event.pos)
-                #print(player.weapon.rect.center)
+                # print(player.weapon.rect.center)
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -71,7 +106,6 @@ def start_game():
         if keys[pygame.K_q]:
             pygame.display.iconify()
         # map.create_way()
-
 
         screen.fill((255, 255, 255))
 
