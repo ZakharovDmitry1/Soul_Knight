@@ -1,11 +1,11 @@
-time
-typing
-pygame
-PIL
-random
-queue
-numpy
-threading
-sys
-screeninfo
-PyQt5.QtWidgets
+numpy      1.24.1
+Pillow     9.4.0
+pip        23.0
+pygame     2.1.2
+PyQt5      5.15.9
+PyQt5-Qt5  5.15.2
+PyQt5-sip  12.11.1
+screeninfo 0.8.1
+setuptools 60.2.0
+typing     3.7.4.3
+wheel      0.37.1
