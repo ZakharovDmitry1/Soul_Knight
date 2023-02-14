@@ -1,27 +1,60 @@
-import os.path
+import sys
 import threading
 import time
-from pprint import pprint
 
 import pygame as pygame
+from PyQt5.QtGui import QPixmap
 
 from bullets import Bullet
 from functions import load_image
 from generation_map import Map
 from camera import Camera
 from settings import *
+from PyQt5.QtWidgets import *
 
-pygame.init()
-clock = pygame.time.Clock()
+
+class Example(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setFixedSize(MONITOR_WIDTH, MONITOR_HEIGHT)
+        self.setWindowTitle('Заставка')
+        self.btn = QPushButton('Начать игру', self)
+        self.btn.resize(200, 100)
+        self.label = QLabel()
+        self.label.resize(MONITOR_WIDTH, MONITOR_HEIGHT)
+        pixmap = QPixmap()
+        pixmap.load(r'C:\Users\79082\PycharmProjects\Soul_Knight\main_image.png')
+        self.label.setPixmap(pixmap)
+        self.btn.move(MONITOR_WIDTH // 2 - 100, MONITOR_HEIGHT // 4 * 3 - 50)
+        self.btn.clicked.connect(self.count)
+
+    def count(self):
+        self.close()
+
+
+def start_main_window():
+    app = QApplication(sys.argv)
+    ex = Example()
+    ex.show()
+    app.exec_()
+
+
+start_main_window()
 
 
 def start_game():
+    pygame.init()
     pygame.display.set_caption("Soul_Knight")
     screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
+    clock = pygame.time.Clock()
     map = Map((MAP_WIDTH, MAP_HEIGHT))
     player = map.generate_level()
     running: bool = True
     time_move_mobs: float = time.time()
+    running, time_move_mobs
     player_group.add(player)
     camera = Camera()
     time_update: float = time.time()
@@ -41,6 +74,8 @@ def start_game():
                     i.is_moving = False
                 else:
                     i.is_moving = True
+            if player.hp <= 0:
+                return
 
         player.weapon.attak_animation()
 
@@ -52,31 +87,20 @@ def start_game():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 player.player_attack(event.pos)
-                print(map.get_real_pos(event.pos)[0] // TILE_SIZE, map.get_real_pos(event.pos)[1] // TILE_SIZE)
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                pass
-                # print(map.get_pos(event.pos))
 
             if event.type == pygame.MOUSEMOTION:
                 player.weapon.set_rotate(player.weapon.rect.center, event.pos)
                 # print(player.weapon.rect.center)
+
         keys = pygame.key.get_pressed()
-        if (keys[pygame.K_RIGHT] and keys[pygame.K_UP]) or (keys[pygame.K_w] and keys[pygame.K_d]):
-            player.move(0.35, -0.35)
-        elif (keys[pygame.K_RIGHT] and keys[pygame.K_DOWN]) or (keys[pygame.K_d] and keys[pygame.K_s]):
-            player.move(0.35, 0.35)
-        elif (keys[pygame.K_DOWN] and keys[pygame.K_LEFT]) or (keys[pygame.K_s] and keys[pygame.K_a]):
-            player.move(-0.35, 0.35)
-        elif (keys[pygame.K_LEFT] and keys[pygame.K_UP]) or (keys[pygame.K_a] and keys[pygame.K_w]):
-            player.move(-0.35, -0.35)
-        elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            player.move(-0.5, 0)
-        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            player.move(0.5, 0)
-        elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            player.move(0, 0.5)
-        elif keys[pygame.K_UP] or keys[pygame.K_w]:
-            player.move(0, -0.5)
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            player.move(-1, 0)
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            player.move(1, 0)
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            player.move(0, 1)
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            player.move(0, -1)
         if keys[pygame.K_ESCAPE]:
             running = False
         if keys[pygame.K_q]:

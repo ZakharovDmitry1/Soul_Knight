@@ -4,7 +4,6 @@ import queue
 import random
 import sys
 import threading
-from pprint import pprint
 
 import PIL
 import numpy as np
@@ -19,7 +18,6 @@ from player import Player
 from settings import *
 from anim import *
 
-random.seed(12)
 
 class Map:
     def __init__(self, size: tuple[int, int]):
@@ -172,13 +170,13 @@ class Map:
                         j - (leaf.y + leaf.roomPos[1] + 1)]
 
     def get_pos(self, rect_pos: tuple[int, int]) -> tuple[int, int]:
-        x, y = self.get_real_pos(rect_pos)
-        resx, resy = x // TILE_SIZE, y // TILE_SIZE
-        return int(resx), int(resy)
+        x: int = rect_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
+        y: int = rect_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
+        return x // TILE_SIZE, y // TILE_SIZE
 
     def get_real_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
-        x: int = mouse_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2
-        y: int = mouse_pos[1] + self.player.real_pos_y + TILE_SIZE - MONITOR_HEIGHT // 2
+        x: int = mouse_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
+        y: int = mouse_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
         return x, y
 
     def get_pos_for_map(self, pos: tuple[int, int]) -> tuple[int, int]:
@@ -186,13 +184,13 @@ class Map:
 
     def create_way(self):
         y_pos, x_pos = self.get_pos(
-            (self.player.rect.x, self.player.rect.y))
+            (self.player.rect.x + self.player.rect.h // 2, self.player.rect.y + self.player.rect.w // 2))
 
-        lx: int = x_pos - self.player.mob_radius
-        rx: int = x_pos + self.player.mob_radius
+        lx = x_pos - self.player.mob_radius
+        rx = x_pos + self.player.mob_radius
 
-        ly: int = y_pos - self.player.mob_radius
-        ry: int = y_pos + self.player.mob_radius
+        ly = y_pos - self.player.mob_radius
+        ry = y_pos + self.player.mob_radius
 
         arr_pos_x = self.player.mob_radius + 1
         arr_pos_y = self.player.mob_radius + 1
@@ -214,7 +212,6 @@ class Map:
             for j in range(ly, ry + 1):
                 if self.map[i][j] == '#' or self.map[i][j] == 'b':
                     self.array[i - lx + 1][j - ly + 1] = -1
-
 
         for i in range(ry - ly + 3):
             self.array[0][i] = -1
@@ -238,26 +235,19 @@ class Map:
                     self.array[new_x][new_y] = self.array[pos[0]][pos[1]] + 1
                     my_queue.put((new_x, new_y))
 
-        # for i in self.array:
-        #     for j in i:
-        #         print(j, end='\t')
-        #     print()
-
         for mob in mobs_group:
-            y, x = self.get_pos(mob.rect.center)
+            y, x = self.get_pos((mob.rect.x + TILE_SIZE, mob.rect.y + TILE_SIZE))
+            y1, x1 = self.get_pos((mob.rect.x, mob.rect.y))
+            if not (lx <= x <= rx and ly <= y <= ry) or not (lx <= x1 <= rx and ly <= y1 <= ry):
+                continue
             if lx <= x <= rx and ly <= y <= ry:
                 pos: list = [x, y]
-                my_lst: list[tuple[int, int]] = [self.get_real_pos(mob.rect.topleft)]
+                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x, mob.rect.y))]
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
-                    # for i in self.array:
-                    #     for j in i:
-                    #         print(j, end=' ')
-                    #     print()
-                    # print(pos[0], pos[1])
-                    # print(pos[0] - lx, pos[1] - ly)
                     continue
                 flag = True
                 while flag:
+                    t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                         new_y, new_x = pos[1] + i[1], pos[0] + i[0]
                         if self.array[new_x - lx][new_y - ly] == self.array[pos[0] - lx][pos[1] - ly] - 1:
@@ -267,10 +257,9 @@ class Map:
                             break
                     if self.array[pos[0] - lx][pos[1] - ly] == 1:
                         flag = False
-                # my_lst.append(self.get_real_pos((self.player.rect.x,
-                #                                  self.player.rect.y)))
+                my_lst.append(self.get_real_pos((self.player.rect.x,
+                                                 self.player.rect.y)))
                 mob.set_way(my_lst)
-
 
         self.array = None
 
@@ -322,8 +311,8 @@ class Leaf:
                             self.room_map[i][j - 1] = self.room_map[i + 1][j - 1] = self.room_map[i + 1][j + 1] = 'b'
 
 
-            for i in range(self.roomSize[0]):
-                for j in range(self.roomSize[1]):
+            for i in range(1, self.roomSize[0] - 1):
+                for j in range(1, self.roomSize[1] - 1):
                     if random.randint(0, 100) == 0 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'f'
                     elif random.randint(0, 100) == 1 and self.room_map[i][j] == '.':

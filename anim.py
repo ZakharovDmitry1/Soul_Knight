@@ -29,7 +29,7 @@ class Anim(AnimationSprite):
 
     def set_damage(self, hp: int):
         self.hp -= hp
-        if self.hp < 0:
+        if self.hp <= 0:
             self.kill()
 
     def attack(self, target: AnimationSprite):
