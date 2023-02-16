@@ -113,19 +113,28 @@ def start_game():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 player.player_attack(event.pos)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                print(map.get_pos(event.pos))
 
             if event.type == pygame.MOUSEMOTION:
                 player.weapon.set_rotate(player.weapon.rect.center, event.pos)
                 #print(player.weapon.rect.center)
-
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        if (keys[pygame.K_RIGHT] and keys[pygame.K_UP]) or (keys[pygame.K_w] and keys[pygame.K_d]):
+            player.move(-0.5, 0.5)
+        elif (keys[pygame.K_RIGHT] and keys[pygame.K_DOWN]) or (keys[pygame.K_d] and keys[pygame.K_s]):
+            player.move(0.5, 0.5)
+        elif (keys[pygame.K_DOWN] and keys[pygame.K_LEFT]) or (keys[pygame.K_s] and keys[pygame.K_a]):
+            player.move(0.5, -0.5)
+        elif (keys[pygame.K_LEFT] and keys[pygame.K_UP]) or (keys[pygame.K_a] and keys[pygame.K_w]):
+            player.move(-0.5, -0.5)
+        elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             player.move(-1, 0)
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             player.move(1, 0)
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
             player.move(0, 1)
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
+        elif keys[pygame.K_UP] or keys[pygame.K_w]:
             player.move(0, -1)
         if keys[pygame.K_ESCAPE]:
             running = False

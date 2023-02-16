@@ -21,18 +21,20 @@ class Player(Anim):
 
         self.columns: int = 4
         self.rows: int = 2
+        self.time_move_player: float = time.time()
 
         self.list_for_sprites = [[0] * 6 for _ in range(4)]
         super(Player, self).__init__(self.sheet, self.list_for_sprites, pos_x, pos_y, speed, hp)
-        self.rect = self.image.get_rect().move(
-            TILE_SIZE * pos_x + TILE_SIZE // 4, TILE_SIZE * pos_y + TILE_SIZE // 7)
         self.set_weapon(Gun())
         self.hp_bar: Healthbar = Healthbar(self.hp)
         self.mob_radius: int = MOB_RADIUS
 
         self.time_damage: float = 0
 
-    def move(self, dx: int, dy: int):
+    def move(self, dx: float, dy: float):
+        if time.time() - self.time_move_player < TIME_MOVE_MOBS:
+            return
+        self.time_move_player = time.time()
         super(Player, self).move(dx, dy)
         self.real_pos_x += dx * self.speed
         self.real_pos_y += dy * self.speed
