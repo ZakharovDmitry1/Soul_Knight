@@ -14,7 +14,7 @@ from settings import *
 class Anim(AnimationSprite):
     def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, speed: int = 10, hp: int = 100):
         super(Anim, self).__init__(sheet, list_for_sprites, x, y, TILE_SIZE * 3 // 2)
-        self.rect.move_ip(self.rect.size[0] - TILE_SIZE, (self.rect.size[1] - TILE_SIZE) // 2)
+        self.rect.move_ip(-self.rect.size[0] + TILE_SIZE, (-self.rect.size[1] + TILE_SIZE) // 2)
         self.START_POS_X += self.rect.size[0] - TILE_SIZE
         self.START_POS_Y += (self.rect.size[1] - TILE_SIZE) // 2
         self.rect.size = (TILE_SIZE, TILE_SIZE)
@@ -47,7 +47,6 @@ class Anim(AnimationSprite):
         self.weapon.move(self.rect.x + TILE_SIZE * 4 // 6, self.rect.y + TILE_SIZE * 4 // 6)
 
     def kill(self) -> None:
-        print('create EnemyDead')
         dead_enemy_group.add(EnemyDead(self.rect.centerx, self.rect.centery))
         super(Anim, self).kill()
         if self.weapon is not None:
@@ -82,10 +81,14 @@ class EngryMob(Anim):
         if self.count_move > self.max_count_move:
             self.count_move = 0
             self.way_pos += 1
-        if 0 <= self.way_pos < self.way.__len__() - 1:
+        if 0 <= self.way_pos < self.way.__len__() - 2:
             dx = self.way[self.way_pos + 1][0] - self.way[self.way_pos][0]
             dy = self.way[self.way_pos + 1][1] - self.way[self.way_pos][1]
             self.simple_move(dx / self.max_count_move, dy / self.max_count_move)
+        if self.way_pos == self.way.__len__() - 2:
+            dx = self.way[self.way_pos + 1][0] - self.way[self.way_pos][0]
+            dy = self.way[self.way_pos + 1][1] - self.way[self.way_pos][1]
+            self.simple_move(dx / self.max_count_move / 2, dy / self.max_count_move / 2)
 
 
 class AnimationMoveAnim(EngryMob):

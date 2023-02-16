@@ -170,27 +170,29 @@ class Map:
                         j - (leaf.y + leaf.roomPos[1] + 1)]
 
     def get_pos(self, rect_pos: tuple[int, int]) -> tuple[int, int]:
-        x: int = rect_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
-        y: int = rect_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
-        return x // TILE_SIZE, y // TILE_SIZE
+        x: int = int(rect_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2 - 20)
+        y: int = int(rect_pos[1] + self.player.real_pos_y + TILE_SIZE - MONITOR_HEIGHT // 2 - 20)
+        resx, resy = x // TILE_SIZE, y // TILE_SIZE
+        np.zeros(((resx) + 3, (resx) + 3), int)
+        return resx, resy
 
     def get_real_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
-        x: int = mouse_pos[0] + self.player.real_pos_x + self.player.rect.h // 2 - MONITOR_WIDTH // 2 - 20
-        y: int = mouse_pos[1] + self.player.real_pos_y + self.player.rect.w // 2 - MONITOR_HEIGHT // 2 - 20
+        x: int = mouse_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2 - 20
+        y: int = mouse_pos[1] + self.player.real_pos_y + TILE_SIZE - MONITOR_HEIGHT // 2 - 20
         return x, y
 
     def get_pos_for_map(self, pos: tuple[int, int]) -> tuple[int, int]:
-        return pos[0] * TILE_SIZE + TILE_SIZE // 2, pos[1] * TILE_SIZE + TILE_SIZE // 2
+        return pos[0] * TILE_SIZE, pos[1] * TILE_SIZE
 
     def create_way(self):
         y_pos, x_pos = self.get_pos(
-            (self.player.rect.x + self.player.rect.h // 2, self.player.rect.y + self.player.rect.w // 2))
+            (self.player.rect.x, self.player.rect.y))
 
-        lx = x_pos - self.player.mob_radius
-        rx = x_pos + self.player.mob_radius
+        lx: int = x_pos - self.player.mob_radius
+        rx: int = x_pos + self.player.mob_radius
 
-        ly = y_pos - self.player.mob_radius
-        ry = y_pos + self.player.mob_radius
+        ly: int = y_pos - self.player.mob_radius
+        ry: int = y_pos + self.player.mob_radius
 
         arr_pos_x = self.player.mob_radius + 1
         arr_pos_y = self.player.mob_radius + 1
@@ -205,6 +207,8 @@ class Map:
             ly = 0
         if ry >= MAP_WIDTH:
             ry = MAP_WIDTH - 1
+
+        print(rx - lx, ry - ly)
 
         self.array: np.ndarray = np.zeros(((rx - lx) + 3, (ry - ly) + 3), int)
 
@@ -241,11 +245,10 @@ class Map:
         #     print()
 
         for mob in mobs_group:
-            y, x = self.get_pos((mob.rect.x + mob.rect.h, mob.rect.y + mob.rect.w))
+            y, x = self.get_pos((mob.rect.x, mob.rect.y))
             if lx <= x <= rx and ly <= y <= ry:
                 pos: list = [x, y]
-                a, b = self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))
-                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x + mob.rect.h // 2, mob.rect.y + mob.rect.w // 2))]
+                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x, mob.rect.y))]
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
                     continue
                 flag = True
@@ -253,7 +256,6 @@ class Map:
                     t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                         new_y, new_x = pos[1] + i[1], pos[0] + i[0]
-                        #print(self.array[new_x][new_y])
                         if self.array[new_x - lx][new_y - ly] == self.array[pos[0] - lx][pos[1] - ly] - 1:
                             my_lst.append(self.get_pos_for_map((new_y, new_x)))
                             pos[0] = new_x
@@ -261,10 +263,8 @@ class Map:
                             break
                     if self.array[pos[0] - lx][pos[1] - ly] == 1:
                         flag = False
-                my_lst.append(self.get_real_pos((self.player.rect.x + self.player.rect.h // 2,
-                                                 self.player.rect.y + self.player.rect.w // 2)))
-                #mob.run(my_lst)
-                #mob.set_way(my_lst)
+                my_lst.append(self.get_real_pos((self.player.rect.x,
+                                                 self.player.rect.y)))
                 mob.set_way(my_lst)
 
         self.array = None

@@ -19,4 +19,3 @@ class EnemyDead(AnimationSprite):
             self.count += 1
         if self.count == self.list_for_sprites[0].__len__():
             self.kill()
-            print('kill')
