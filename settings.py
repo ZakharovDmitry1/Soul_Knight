@@ -6,14 +6,14 @@ HEIGHT: int = 600
 
 TILE_SIZE: int = 64
 
-MAP_WIDTH: int = 70
-MAP_HEIGHT: int = 70
+MAP_WIDTH: int = 20
+MAP_HEIGHT: int = 20
 
 MIN_ROOM_SIZE: int = 15
 MIN_LEAF_SIZE: int = 20
 
 MAP_UPDATE_TIME: float = 1
-TIME_UPDATE_MOBS: float = 0.01
+TIME_UPDATE_MOBS: float = 0.2
 TIME_UPDATE_MOBS_ANIMATION: float = 0.07
 
 FPS: int = 40
