@@ -208,8 +208,6 @@ class Map:
         if ry >= MAP_WIDTH:
             ry = MAP_WIDTH - 1
 
-        print(rx - lx, ry - ly)
-
         self.array: np.ndarray = np.zeros(((rx - lx) + 3, (ry - ly) + 3), int)
 
         for i in range(lx, rx + 1):

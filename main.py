@@ -1,5 +1,6 @@
 import threading
 import time
+from pprint import pprint
 
 import pygame as pygame
 
@@ -10,17 +11,26 @@ from camera import Camera
 from settings import *
 
 pygame.init()
-pygame.display.set_caption("Soul_Knight")
-screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
 clock = pygame.time.Clock()
-map = Map((MAP_WIDTH, MAP_HEIGHT))
-player = map.generate_level()
-running: bool = True
-time_move_mobs: float = time.time()
 
 
+
+
+def start_home():
+    # pygame.display.set_caption("Soul_Knight")
+    # screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
+    home_map: list[list[str]] = []
+    with open('maps/homeMap.txt') as home_map_file:
+        home_map = [list(i) for i in home_map_file.readlines()]
+
+start_home()
 def start_game():
-    global running, time_move_mobs
+    pygame.display.set_caption("Soul_Knight")
+    screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
+    map = Map((MAP_WIDTH, MAP_HEIGHT))
+    player = map.generate_level()
+    running: bool = True
+    time_move_mobs: float = time.time()
     player_group.add(player)
     camera = Camera()
     time_update: float = time.time()
@@ -30,6 +40,8 @@ def start_game():
             time_move_mobs = time.time()
             for i in mobs_group:
                 i.run()
+                print(map.get_pos((i.rect.x, i.rect.y)))
+                print(i.rect.x, i.rect.y)
 
         if time.time() - time_update > MAP_UPDATE_TIME:
             map.create_way()
@@ -53,20 +65,21 @@ def start_game():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 player.player_attack(event.pos)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                print(map.get_pos(event.pos))
+                pass
+                #print(map.get_pos(event.pos))
 
             if event.type == pygame.MOUSEMOTION:
                 player.weapon.set_rotate(player.weapon.rect.center, event.pos)
                 #print(player.weapon.rect.center)
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_RIGHT] and keys[pygame.K_UP]) or (keys[pygame.K_w] and keys[pygame.K_d]):
-            player.move(-0.5, 0.5)
+            player.move(0.7, -0.7)
         elif (keys[pygame.K_RIGHT] and keys[pygame.K_DOWN]) or (keys[pygame.K_d] and keys[pygame.K_s]):
-            player.move(0.5, 0.5)
+            player.move(0.7, 0.7)
         elif (keys[pygame.K_DOWN] and keys[pygame.K_LEFT]) or (keys[pygame.K_s] and keys[pygame.K_a]):
-            player.move(0.5, -0.5)
+            player.move(-0.7, 0.7)
         elif (keys[pygame.K_LEFT] and keys[pygame.K_UP]) or (keys[pygame.K_a] and keys[pygame.K_w]):
-            player.move(-0.5, -0.5)
+            player.move(-0.7, -0.7)
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             player.move(-1, 0)
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
