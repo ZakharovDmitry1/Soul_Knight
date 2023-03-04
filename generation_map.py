@@ -4,6 +4,7 @@ import queue
 import random
 import sys
 import threading
+from pprint import pprint
 
 import PIL
 import numpy as np
@@ -18,6 +19,7 @@ from player import Player
 from settings import *
 from anim import *
 
+random.seed(10)
 
 class Map:
     def __init__(self, size: tuple[int, int]):
@@ -173,8 +175,7 @@ class Map:
         x: int = int(rect_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2 - 20)
         y: int = int(rect_pos[1] + self.player.real_pos_y + TILE_SIZE - MONITOR_HEIGHT // 2 - 20)
         resx, resy = x // TILE_SIZE, y // TILE_SIZE
-        np.zeros(((resx) + 3, (resx) + 3), int)
-        return resx, resy
+        return resx, resy - 1
 
     def get_real_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
         x: int = mouse_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2 - 20
@@ -242,6 +243,8 @@ class Map:
         #         print(j, end='\t')
         #     print()
 
+        print(mobs_group.__len__())
+
         for mob in mobs_group:
             y, x = self.get_pos((mob.rect.x, mob.rect.y))
             if lx <= x <= rx and ly <= y <= ry:
@@ -264,6 +267,10 @@ class Map:
                 my_lst.append(self.get_real_pos((self.player.rect.x,
                                                  self.player.rect.y)))
                 mob.set_way(my_lst)
+                pprint(my_lst)
+            else:
+                print(y, x)
+
 
         self.array = None
 
