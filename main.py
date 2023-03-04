@@ -1,3 +1,4 @@
+import os.path
 import threading
 import time
 from pprint import pprint
@@ -13,17 +14,6 @@ from settings import *
 pygame.init()
 clock = pygame.time.Clock()
 
-
-
-
-def start_home():
-    # pygame.display.set_caption("Soul_Knight")
-    # screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
-    home_map: list[list[str]] = []
-    with open('maps/homeMap.txt') as home_map_file:
-        home_map = [list(i) for i in home_map_file.readlines()]
-
-start_home()
 def start_game():
     pygame.display.set_caption("Soul_Knight")
     screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
@@ -40,8 +30,6 @@ def start_game():
             time_move_mobs = time.time()
             for i in mobs_group:
                 i.run()
-                print(map.get_pos((i.rect.x, i.rect.y)))
-                print(i.rect.x, i.rect.y)
 
         if time.time() - time_update > MAP_UPDATE_TIME:
             map.create_way()
