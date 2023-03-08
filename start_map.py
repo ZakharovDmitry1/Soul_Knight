@@ -27,11 +27,14 @@ class StartMap:
                     all_sprites.add(Tile(f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png',
                                          j, i, resize=TILE_SIZE))
                 elif self.map[i][j] == '#':
-                    walls_group.add(Tile(f'v1.1 dungeon crawler 16X16 pixel pack/tiles/wall/wall_{random.randint(1, 3)}.png',
+                    walls_group.add(Tile(f'v1.1 dungeon crawler 16X16 pixel pack/tiles/wall/wall_{random.randint(1, 2)}.png',
                                          j, i, resize=TILE_SIZE))
                 elif self.map[i][j] == '@':
                     self.player = Player(j, i)
-                    player_group.add(Player(j, i))
+                    player_group.add(self.player)
+                    all_sprites.add(
+                        Tile(f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png',
+                             j, i, resize=TILE_SIZE))
 
     def destroy(self):
         for i in all_sprites:

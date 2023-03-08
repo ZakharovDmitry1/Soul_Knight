@@ -69,6 +69,7 @@ def start_first_window():
         for sprite in all_sprites:
             camera.apply(sprite)
         pygame.display.flip()
+    start_map.destroy()
 
 start_first_window()
 
@@ -154,4 +155,4 @@ def start_game():
         pygame.display.flip()
 
 
-start_game()
+#start_game()
