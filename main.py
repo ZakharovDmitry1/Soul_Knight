@@ -10,6 +10,7 @@ from camera import Camera
 from player import Player
 from settings import *
 from start_map import StartMap
+from weapons import Gun
 
 pygame.init()
 pygame.display.set_caption("Soul_Knight")
@@ -19,11 +20,20 @@ clock = pygame.time.Clock()
 
 def start_first_window():
     pygame.display.set_caption("Soul_Knight")
-    screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
+    screen: pygame.Surface = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
     running: bool = True
     camera = Camera()
-    start_map = StartMap('maps/startMap.txt')
-    player: Player = start_map.player
+    start_map = StartMap(screen)
+    #player: Player = start_map.player
+    for y in range(start_map.height):
+        for x in range(start_map.width):
+            image = start_map.map.get_tile_image(x, y, 0)
+            image = pygame.transform.scale(image, (TILE_SIZE, TILE_SIZE))
+            screen.blit(image, (TILE_SIZE * x, TILE_SIZE * y))
+    pygame.display.flip()
+    player: Player = Player(5, 5, speed=2)
+    player.set_weapon(None)
+    player_group.add(player)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -32,7 +42,8 @@ def start_first_window():
                 player.player_attack(event.pos)
 
             if event.type == pygame.MOUSEMOTION:
-                player.weapon.set_rotate(player.weapon.rect.center, event.pos)
+                if player.weapon:
+                    player.weapon.set_rotate(player.weapon.rect.center, event.pos)
                 # print(player.weapon.rect.center)
 
         keys = pygame.key.get_pressed()
@@ -48,26 +59,15 @@ def start_first_window():
             running = False
         if keys[pygame.K_q]:
             pygame.display.iconify()
-        # map.create_way()
 
         screen.fill((255, 255, 255))
-
-        all_sprites.draw(screen)
+        for y in range(start_map.height):
+            for x in range(start_map.width):
+                image = start_map.map.get_tile_image(x, y, 0)
+                image = pygame.transform.scale(image, (TILE_SIZE, TILE_SIZE))
+                screen.blit(image, (TILE_SIZE * x, TILE_SIZE * y))
         all_sprites.update()
-        walls_group.draw(screen)
-        player_group.draw(screen)
-        weapons_group.draw(screen)
-        bar_group.draw(screen)
-        bar_group.update()
-        mobs_group.draw(screen)
-        bullets_group.draw(screen)
-        dead_enemy_group.draw(screen)
-
-        clock.tick(FPS)
-        camera.update(player)
-        # обновляем положение всех спрайтов
-        for sprite in all_sprites:
-            camera.apply(sprite)
+        all_sprites.draw(screen)
         pygame.display.flip()
     start_map.destroy()
 

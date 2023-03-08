@@ -4,7 +4,7 @@ from screeninfo import get_monitors
 WIDTH: int = 700
 HEIGHT: int = 600
 
-TILE_SIZE: int = 50
+TILE_SIZE: int = 64
 
 MAP_WIDTH: int = 70
 MAP_HEIGHT: int = 70
