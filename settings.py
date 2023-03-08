@@ -35,4 +35,5 @@ bar_group: pygame.sprite.Group = pygame.sprite.Group()
 mobs_group: pygame.sprite.Group = pygame.sprite.Group()
 bullets_group: pygame.sprite.Group = pygame.sprite.Group()
 dead_enemy_group: pygame.sprite.Group = pygame.sprite.Group()
+
 #engry_mobs_group: pygame.sprite.Group = pygame.sprite.Group()
