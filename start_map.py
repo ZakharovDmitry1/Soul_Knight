@@ -18,12 +18,10 @@ from anim import *
 
 class StartMap:
     def __init__(self, screen: pygame.Surface):
-        self.map: TiledMap = pytmx.load_pygame(r'C:\Users\79082\Desktop\NewProject\mymap.tmx')
+        self.map: TiledMap = pytmx.load_pygame(r"NewProject/mymap.tmx")
         self.height: int = self.map.height
         self.width: int = self.map.width
         self.tile_size = self.map.tilewidth
-
-
 
     def destroy(self):
         for i in all_sprites:
