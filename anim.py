@@ -42,8 +42,6 @@ class Anim(AnimationSprite):
         self.armor = armor
 
     def set_weapon(self, weapon: Weapon):
-        if self.weapon is None:
-            return
         if self.weapon is not None:
             self.weapon.kill()
         self.weapon = weapon

@@ -32,7 +32,7 @@ def start_first_window():
             screen.blit(image, (TILE_SIZE * x, TILE_SIZE * y))
     pygame.display.flip()
     player: Player = Player(5, 5, speed=2)
-    player.set_weapon(None)
+    #player.set_weapon(None)
     player_group.add(player)
     while running:
         for event in pygame.event.get():
@@ -71,7 +71,7 @@ def start_first_window():
         pygame.display.flip()
     start_map.destroy()
 
-start_first_window()
+#start_first_window()
 
 
 
@@ -155,4 +155,4 @@ def start_game():
         pygame.display.flip()
 
 
-#start_game()
+start_game()
