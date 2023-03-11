@@ -18,6 +18,8 @@ from functions import load_image
 from player import Player
 from settings import *
 from anim import *
+import tmxreader
+import helperspygame
 
 random.seed(10)
 
@@ -172,14 +174,13 @@ class Map:
                         j - (leaf.y + leaf.roomPos[1] + 1)]
 
     def get_pos(self, rect_pos: tuple[int, int]) -> tuple[int, int]:
-        x: int = int(rect_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2 - 20)
-        y: int = int(rect_pos[1] + self.player.real_pos_y + TILE_SIZE - MONITOR_HEIGHT // 2 - 20)
+        x, y = self.get_real_pos(rect_pos)
         resx, resy = x // TILE_SIZE, y // TILE_SIZE
-        return resx, resy - 1
+        return int(resx), int(resy)
 
     def get_real_pos(self, mouse_pos: tuple[int, int]) -> tuple[int, int]:
-        x: int = mouse_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2 - 20
-        y: int = mouse_pos[1] + self.player.real_pos_y + TILE_SIZE - MONITOR_HEIGHT // 2 - 20
+        x: int = mouse_pos[0] + self.player.real_pos_x + TILE_SIZE - MONITOR_WIDTH // 2
+        y: int = mouse_pos[1] + self.player.real_pos_y + TILE_SIZE - MONITOR_HEIGHT // 2
         return x, y
 
     def get_pos_for_map(self, pos: tuple[int, int]) -> tuple[int, int]:
@@ -216,6 +217,7 @@ class Map:
                 if self.map[i][j] == '#' or self.map[i][j] == 'b':
                     self.array[i - lx + 1][j - ly + 1] = -1
 
+
         for i in range(ry - ly + 3):
             self.array[0][i] = -1
             self.array[(rx - lx) + 2][i] = -1
@@ -243,14 +245,18 @@ class Map:
         #         print(j, end='\t')
         #     print()
 
-        print(mobs_group.__len__())
-
         for mob in mobs_group:
-            y, x = self.get_pos((mob.rect.x, mob.rect.y))
+            y, x = self.get_pos(mob.rect.center)
             if lx <= x <= rx and ly <= y <= ry:
                 pos: list = [x, y]
-                my_lst: list[tuple[int, int]] = [self.get_real_pos((mob.rect.x, mob.rect.y))]
+                my_lst: list[tuple[int, int]] = [self.get_real_pos(mob.rect.center)]
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
+                    # for i in self.array:
+                    #     for j in i:
+                    #         print(j, end=' ')
+                    #     print()
+                    # print(pos[0], pos[1])
+                    # print(pos[0] - lx, pos[1] - ly)
                     continue
                 flag = True
                 while flag:
@@ -264,12 +270,9 @@ class Map:
                             break
                     if self.array[pos[0] - lx][pos[1] - ly] == 1:
                         flag = False
-                my_lst.append(self.get_real_pos((self.player.rect.x,
-                                                 self.player.rect.y)))
+                # my_lst.append(self.get_real_pos((self.player.rect.x,
+                #                                  self.player.rect.y)))
                 mob.set_way(my_lst)
-                pprint(my_lst)
-            else:
-                print(y, x)
 
 
         self.array = None
