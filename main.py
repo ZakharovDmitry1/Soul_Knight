@@ -64,6 +64,7 @@ def start_game():
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 player.player_attack(event.pos)
+                print(map.get_real_pos(event.pos)[0] // TILE_SIZE, map.get_real_pos(event.pos)[1] // TILE_SIZE)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 pass
                 #print(map.get_pos(event.pos))

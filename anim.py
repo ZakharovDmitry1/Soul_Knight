@@ -14,7 +14,7 @@ from settings import *
 class Anim(AnimationSprite):
     def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, speed: int = 10, hp: int = 100):
         super(Anim, self).__init__(sheet, list_for_sprites, x, y, TILE_SIZE * 3 // 2)
-        self.rect = pygame.rect.Rect(x * TILE_SIZE + 10, y * TILE_SIZE + 10, TILE_SIZE, TILE_SIZE)
+        self.rect = pygame.rect.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         self.START_POS_X = self.rect.x
         self.START_POS_Y = self.rect.y
         self.is_moving: bool = True
