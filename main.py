@@ -26,7 +26,7 @@ def start_game():
     time_update: float = time.time()
 
     while running:
-        if time.time() - time_move_mobs >= TIME_MOVE_MOBS:
+        if time.time() - time_move_mobs >= TIME_MOVE_MOBS * 3:
             time_move_mobs = time.time()
             for i in mobs_group:
                 i.run()
@@ -62,21 +62,21 @@ def start_game():
                 #print(player.weapon.rect.center)
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_RIGHT] and keys[pygame.K_UP]) or (keys[pygame.K_w] and keys[pygame.K_d]):
-            player.move(0.7, -0.7)
+            player.move(0.35, -0.35)
         elif (keys[pygame.K_RIGHT] and keys[pygame.K_DOWN]) or (keys[pygame.K_d] and keys[pygame.K_s]):
-            player.move(0.7, 0.7)
+            player.move(0.35, 0.35)
         elif (keys[pygame.K_DOWN] and keys[pygame.K_LEFT]) or (keys[pygame.K_s] and keys[pygame.K_a]):
-            player.move(-0.7, 0.7)
+            player.move(-0.35, 0.35)
         elif (keys[pygame.K_LEFT] and keys[pygame.K_UP]) or (keys[pygame.K_a] and keys[pygame.K_w]):
-            player.move(-0.7, -0.7)
+            player.move(-0.35, -0.35)
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            player.move(-1, 0)
+            player.move(-0.5, 0)
         elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            player.move(1, 0)
+            player.move(0.5, 0)
         elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            player.move(0, 1)
+            player.move(0, 0.5)
         elif keys[pygame.K_UP] or keys[pygame.K_w]:
-            player.move(0, -1)
+            player.move(0, -0.5)
         if keys[pygame.K_ESCAPE]:
             running = False
         if keys[pygame.K_q]:

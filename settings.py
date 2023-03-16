@@ -6,8 +6,8 @@ HEIGHT: int = 600
 
 TILE_SIZE: int = 64
 
-MAP_WIDTH: int = 100
-MAP_HEIGHT: int = 100
+MAP_WIDTH: int = 20
+MAP_HEIGHT: int = 20
 
 MIN_ROOM_SIZE: int = 15
 MIN_LEAF_SIZE: int = 20
