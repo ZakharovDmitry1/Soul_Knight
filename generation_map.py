@@ -18,10 +18,8 @@ from functions import load_image
 from player import Player
 from settings import *
 from anim import *
-import tmxreader
-import helperspygame
 
-random.seed(10)
+random.seed(12)
 
 class Map:
     def __init__(self, size: tuple[int, int]):
@@ -260,7 +258,6 @@ class Map:
                     continue
                 flag = True
                 while flag:
-                    t = False
                     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                         new_y, new_x = pos[1] + i[1], pos[0] + i[0]
                         if self.array[new_x - lx][new_y - ly] == self.array[pos[0] - lx][pos[1] - ly] - 1:
@@ -273,6 +270,7 @@ class Map:
                 # my_lst.append(self.get_real_pos((self.player.rect.x,
                 #                                  self.player.rect.y)))
                 mob.set_way(my_lst)
+                print(my_lst)
 
 
         self.array = None

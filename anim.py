@@ -78,6 +78,7 @@ class EngryMob(Anim):
             return
         self.count_move += 1
         if self.count_move > self.max_count_move:
+            print()
             self.count_move = 0
             self.way_pos += 1
         if 0 <= self.way_pos < self.way.__len__() - 2:
