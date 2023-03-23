@@ -247,7 +247,7 @@ class Map:
             y, x = self.get_pos(mob.rect.center)
             if lx <= x <= rx and ly <= y <= ry:
                 pos: list = [x, y]
-                my_lst: list[tuple[int, int]] = [self.get_real_pos(mob.rect.center)]
+                my_lst: list[tuple[int, int]] = [self.get_real_pos(mob.rect.topleft)]
                 if self.array[pos[0] - lx][pos[1] - ly] <= 0:
                     # for i in self.array:
                     #     for j in i:
@@ -270,7 +270,6 @@ class Map:
                 # my_lst.append(self.get_real_pos((self.player.rect.x,
                 #                                  self.player.rect.y)))
                 mob.set_way(my_lst)
-                print(my_lst)
 
 
         self.array = None
