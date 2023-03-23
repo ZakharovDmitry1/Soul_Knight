@@ -60,7 +60,7 @@ class EngryMob(Anim):
         self.timer_move: float = time.time()
         self.way_pos: int = -1
         self.count_move: int = 0
-        self.max_count_move: int = 6
+        self.max_count_move: int = 1
 
     def set_way(self, way):
         self.way = way
@@ -76,9 +76,7 @@ class EngryMob(Anim):
     def run(self):
         if not self.is_moving:
             return
-        self.count_move += 1
         if self.count_move > self.max_count_move:
-            print()
             self.count_move = 0
             self.way_pos += 1
         if 0 <= self.way_pos < self.way.__len__() - 2:
@@ -89,6 +87,8 @@ class EngryMob(Anim):
             dx = self.way[self.way_pos + 1][0] - self.way[self.way_pos][0]
             dy = self.way[self.way_pos + 1][1] - self.way[self.way_pos][1]
             self.simple_move(dx / self.max_count_move / 2, dy / self.max_count_move / 2)
+        print(self.rect.topleft)
+        self.count_move += 1
 
 
 class AnimationMoveAnim(EngryMob):

@@ -26,7 +26,7 @@ def start_game():
     time_update: float = time.time()
 
     while running:
-        if time.time() - time_move_mobs >= TIME_MOVE_MOBS * 3:
+        if time.time() - time_move_mobs >= TIME_MOVE_MOBS * 20:
             time_move_mobs = time.time()
             for i in mobs_group:
                 i.run()
