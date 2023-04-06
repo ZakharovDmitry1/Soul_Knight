@@ -16,8 +16,9 @@ from settings import *
 
 class Weapon(pygame.sprite.Sprite):
     def __init__(self, first_img: str, rows: int, columns: int, column: int,
-                 width_image: int, cooldown: float, damage: int, bullet: Surface):
+                 width_image: int, cooldown: float, damage: int, max_columns: int, bullet: Surface):
         super(Weapon, self).__init__(all_sprites, weapons_group)
+        self.max_columns: int = max_columns
 
         new_img = Image.open(first_img).convert('RGBA')
         new_img = new_img.resize(((int)(new_img.size[0] * (width_image / (new_img.size[1] / rows))),
@@ -78,7 +79,7 @@ class Weapon(pygame.sprite.Sprite):
         self.time_animation = time.time()
 
     def cut_sheet(self):
-        for i in range(self.columns):
+        for i in range(self.max_columns):
             frame_location = (self.rect.w * i, self.rect.h * (self.column - 1))
             self.frames.append(self.sheet.subsurface(
                 pygame.Rect(frame_location, self.rect.size)))
@@ -129,6 +130,16 @@ class Stick(Weapon):
         pass
 
 
+class ShortGun(Weapon):
+    def __init__(self):
+        image = load_image('RoguelikeWeapons/Bullets 3-Sheet.png').subsurface(pygame.rect.Rect((32 * 9, 0), (32, 32)))
+        super(ShortGun, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', rows=11, columns=8, column=4,
+                                       width_image=50, damage=2, cooldown=0.5, bullet=image, max_columns=3)
+
+    def attack(self, target: tuple[int, int]):
+        for i in range(10):
+            Bullet(self.bullet, (self.rect.x, self.rect.y), target, 10, self.damage, rotate=self.angle, resize=40)
+
 
 class Bow(Weapon):
     def __init__(self):
@@ -148,7 +159,6 @@ class Gun(Weapon):
 
     def attack(self, target: tuple[int, int]):
         Bullet(self.bullet, (self.rect.x, self.rect.y), target, 10, self.damage, rotate=self.angle, resize=40)
-
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         ...
