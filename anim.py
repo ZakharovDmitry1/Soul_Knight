@@ -62,7 +62,7 @@ class EngryMob(Anim):
         self.timer_move: float = time.time()
         self.way_pos: int = -1
         self.count_move: int = 0
-        self.max_count_move: int = 1
+        self.max_count_move: int = 15
 
     def set_way(self, way):
         self.way = way

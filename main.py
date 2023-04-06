@@ -1,3 +1,4 @@
+import os.path
 import threading
 import time
 from pprint import pprint
@@ -14,16 +15,6 @@ pygame.init()
 clock = pygame.time.Clock()
 
 
-
-
-def start_home():
-    # pygame.display.set_caption("Soul_Knight")
-    # screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
-    home_map: list[list[str]] = []
-    with open('maps/homeMap.txt') as home_map_file:
-        home_map = [list(i) for i in home_map_file.readlines()]
-
-start_home()
 def start_game():
     pygame.display.set_caption("Soul_Knight")
     screen = pygame.display.set_mode((MONITOR_WIDTH, MONITOR_HEIGHT))
@@ -36,12 +27,10 @@ def start_game():
     time_update: float = time.time()
 
     while running:
-        if time.time() - time_move_mobs >= TIME_MOVE_MOBS * 20:
+        if time.time() - time_move_mobs >= TIME_MOVE_MOBS:
             time_move_mobs = time.time()
             for i in mobs_group:
                 i.run()
-                print(map.get_pos((i.rect.x, i.rect.y)))
-                print(i.rect.x, i.rect.y)
 
         if time.time() - time_update > MAP_UPDATE_TIME:
             map.create_way()
@@ -58,7 +47,6 @@ def start_game():
         # for i in mobs_group:
         #     i.run(TIME_UPDATE_MOBS)
 
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -67,11 +55,11 @@ def start_game():
                 print(map.get_real_pos(event.pos)[0] // TILE_SIZE, map.get_real_pos(event.pos)[1] // TILE_SIZE)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 pass
-                #print(map.get_pos(event.pos))
+                # print(map.get_pos(event.pos))
 
             if event.type == pygame.MOUSEMOTION:
                 player.weapon.set_rotate(player.weapon.rect.center, event.pos)
-                #print(player.weapon.rect.center)
+                # print(player.weapon.rect.center)
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_RIGHT] and keys[pygame.K_UP]) or (keys[pygame.K_w] and keys[pygame.K_d]):
             player.move(0.35, -0.35)
@@ -94,7 +82,6 @@ def start_game():
         if keys[pygame.K_q]:
             pygame.display.iconify()
         # map.create_way()
-
 
         screen.fill((255, 255, 255))
 
