@@ -19,7 +19,7 @@ from player import Player
 from settings import *
 from anim import *
 
-random.seed(12)
+#random.seed(12)
 
 class Map:
     def __init__(self, size: tuple[int, int]):

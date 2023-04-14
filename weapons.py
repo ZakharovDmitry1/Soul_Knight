@@ -1,4 +1,5 @@
 import math
+import random
 import threading
 import time
 from abc import abstractmethod
@@ -21,8 +22,8 @@ class Weapon(pygame.sprite.Sprite):
         self.max_columns: int = max_columns
 
         new_img = Image.open(first_img).convert('RGBA')
-        new_img = new_img.resize(((int)(new_img.size[0] * (width_image / (new_img.size[1] / rows))),
-                                  (int)(new_img.size[1] * (width_image / (new_img.size[1] / rows)))))
+        new_img = new_img.resize(((int)(rows * width_image),
+                                  (int)(columns * width_image)))
         new_img.save('cache/weapon.png')
 
         sheet = load_image('cache/weapon.png')
@@ -48,8 +49,8 @@ class Weapon(pygame.sprite.Sprite):
 
         self.column: int = column
 
-        self.rect = pygame.Rect(0, 0, self.sheet.get_height() // self.rows,
-                                self.sheet.get_height() // self.rows)
+        self.rect = pygame.Rect(0, 0, width_image,
+                                width_image)
 
         self.frames: list = []
         self.cur_frame: int = 0
@@ -138,12 +139,18 @@ class ShortGun(Weapon):
 
     def attack(self, target: tuple[int, int]):
         for i in range(10):
-            Bullet(self.bullet, (self.rect.x, self.rect.y), target, 10, self.damage, rotate=self.angle, resize=40)
+            vec = [target[0] - self.rect.x, target[1] - self.rect.y]
+            angle = random.uniform(-0.15, 0.15)
+            rotatedX = vec[0] * math.cos(angle) - vec[1] * math.sin(angle)
+            rotatedY = vec[0] * math.sin(angle) + vec[1] * math.cos(angle)
+            Bullet(self.bullet, (self.rect.x, self.rect.y), (rotatedX + self.rect.x, rotatedY + self.rect.y), random.randint(5, 16), self.damage, rotate=self.angle, resize=40, kill_time=0.4)
 
 
 class Bow(Weapon):
     def __init__(self):
-        super(Bow, self).__init__()
+        image = load_image('RoguelikeWeapons/Bullets 3-Sheet.png').subsurface(pygame.rect.Rect((32 * 9, 0), (32, 32)))
+        super(ShortGun, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', rows=11, columns=8, column=4,
+                                       width_image=50, damage=2, cooldown=0.5, bullet=image, max_columns=3)
 
 
 class Sword(Weapon):
@@ -152,10 +159,10 @@ class Sword(Weapon):
 
 
 class Gun(Weapon):
-    def __init__(self):
-        image = load_image('RoguelikeWeapons/Bullets 3-Sheet.png').subsurface(pygame.rect.Rect((32 * 23, 0), (32, 32)))
-        super(Gun, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', rows=11, columns=8, column=5,
-                                  width_image=50, cooldown=0.5, damage=30, bullet=image)
+    def __init__(self, first_img: str, rows: int, columns: int, column: int,
+                 width_image: int, cooldown: float, damage: int, max_columns: int, bullet: Surface):
+        super(Gun, self).__init__(first_img, rows=rows, columns=columns, column=column,
+                                  width_image=width_image, cooldown=cooldown, damage=damage, bullet=bullet, max_columns=max_columns)
 
     def attack(self, target: tuple[int, int]):
         Bullet(self.bullet, (self.rect.x, self.rect.y), target, 10, self.damage, rotate=self.angle, resize=40)

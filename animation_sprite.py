@@ -24,7 +24,7 @@ class AnimationSprite(pygame.sprite.Sprite):
         self.cur_frame: int = 0
         self.cur_column: int = 0
         self.image: pygame.Surface = self.list_for_sprites[self.cur_column][self.cur_frame]
-        self.rect = pygame.rect.Rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        self.rect = self.rect.move(x * TILE_SIZE, y * TILE_SIZE)
         self.timer: float = time.perf_counter()
 
         self.START_POS_X: int = x * TILE_SIZE
@@ -35,13 +35,13 @@ class AnimationSprite(pygame.sprite.Sprite):
         pass
 
     def cut_sheet(self, sheet: pygame.Surface, list_for_sprites: list[list[pygame.surface.Surface]]):
-        rect = pygame.Rect(0, 0, sheet.get_width() // list_for_sprites[0].__len__(),
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // list_for_sprites[0].__len__(),
                                 sheet.get_height() // self.list_for_sprites.__len__())
         for j in range(list_for_sprites.__len__()):
             for i in range(list_for_sprites[j].__len__()):
-                frame_location = (rect.w * i, rect.h * j)
-                self.list_for_sprites[j][i] = load_image('cache/img.png')#sheet.subsurface(pygame.Rect(
-                    #frame_location, rect.size))
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.list_for_sprites[j][i] = sheet.subsurface(pygame.Rect(
+                    frame_location, self.rect.size))
 
     def update(self, *args: Any, **kwargs: Any) -> bool:
         # print(self.timer - time.perf_counter())
