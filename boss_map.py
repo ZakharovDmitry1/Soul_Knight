@@ -1,27 +1,14 @@
-import copy
 import csv
 import json
-import os
-import queue
-import random
-import sys
-import pygame
-import pytmx as pytmx
-from PIL import Image, ImageDraw
-from pytmx import TiledMap
 
-import player
 from animation_sprite import Tile
-from functions import load_image
-from player import Player
 from settings import *
-from anim import *
 
 
-class StartMap:
+class BossMap:
     def __init__(self):
         self.map: list[list[int]] = []
-        with open('boss.csv', 'r') as csvfile:
+        with open('boss_map.csv', 'r') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='"')
             for index, row in enumerate(reader):
                 self.map.append(list(map(int, row)))

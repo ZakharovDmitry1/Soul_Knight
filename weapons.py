@@ -12,6 +12,7 @@ from pygame import Surface
 
 from bullets import Bullet
 from functions import load_image
+from music import GUN_ATTACK
 from settings import *
 
 
@@ -28,6 +29,8 @@ class Weapon(pygame.sprite.Sprite):
 
         sheet = load_image('cache/weapon.png')
         self.bullet: Surface = bullet
+
+        self.time_attack: float = time.time()
 
         self.x = None
         self.y = None
@@ -116,9 +119,12 @@ class Weapon(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.frames[self.cur_frame], self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
 
-    @abstractmethod
-    def attack(self, target: tuple[int, int]):
-        ...
+    def attack(self, target: tuple[int, int]) -> bool:
+        if time.time() - self.time_attack < self.cooldown:
+            return False
+        else:
+            self.time_attack = time.time()
+        return True
 
 
 class Stick(Weapon):
@@ -132,18 +138,23 @@ class Stick(Weapon):
 
 
 class ShortGun(Weapon):
-    def __init__(self):
-        image = load_image('RoguelikeWeapons/Bullets 3-Sheet.png').subsurface(pygame.rect.Rect((32 * 9, 0), (32, 32)))
-        super(ShortGun, self).__init__('RoguelikeWeapons/Weapons 2-Sheet.png', rows=11, columns=8, column=4,
-                                       width_image=50, damage=2, cooldown=0.5, bullet=image, max_columns=3)
+    def __init__(self, first_img: str, rows: int, columns: int, column: int,
+                 width_image: int, cooldown: float, damage: int, max_columns: int, bullet: Surface):
+        super(ShortGun, self).__init__(first_img, rows=rows, columns=columns, column=column,
+                                       width_image=width_image, cooldown=cooldown, damage=damage, bullet=bullet,
+                                       max_columns=max_columns)
 
     def attack(self, target: tuple[int, int]):
+        if not super().attack(target):
+            return
+        GUN_ATTACK.play(0)
         for i in range(10):
             vec = [target[0] - self.rect.x, target[1] - self.rect.y]
             angle = random.uniform(-0.15, 0.15)
             rotatedX = vec[0] * math.cos(angle) - vec[1] * math.sin(angle)
             rotatedY = vec[0] * math.sin(angle) + vec[1] * math.cos(angle)
-            Bullet(self.bullet, (self.rect.x, self.rect.y), (rotatedX + self.rect.x, rotatedY + self.rect.y), random.randint(5, 16), self.damage, rotate=self.angle, resize=40, kill_time=0.4)
+            Bullet(self.bullet, (self.rect.x, self.rect.y), (rotatedX + self.rect.x, rotatedY + self.rect.y),
+                   random.randint(5, 16), self.damage, rotate=self.angle, resize=40, kill_time=0.4)
 
 
 class Bow(Weapon):
@@ -162,9 +173,14 @@ class Gun(Weapon):
     def __init__(self, first_img: str, rows: int, columns: int, column: int,
                  width_image: int, cooldown: float, damage: int, max_columns: int, bullet: Surface):
         super(Gun, self).__init__(first_img, rows=rows, columns=columns, column=column,
-                                  width_image=width_image, cooldown=cooldown, damage=damage, bullet=bullet, max_columns=max_columns)
+                                  width_image=width_image, cooldown=cooldown, damage=damage, bullet=bullet,
+                                  max_columns=max_columns)
+
 
     def attack(self, target: tuple[int, int]):
+        if not super().attack(target):
+            return
+        GUN_ATTACK.play(0)
         Bullet(self.bullet, (self.rect.x, self.rect.y), target, 10, self.damage, rotate=self.angle, resize=40)
 
     def update(self, *args: Any, **kwargs: Any) -> None:
