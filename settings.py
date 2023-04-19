@@ -6,8 +6,8 @@ HEIGHT: int = 600
 
 TILE_SIZE: int = 64
 
-MAP_WIDTH: int = 70
-MAP_HEIGHT: int = 70
+MAP_WIDTH: int = 20
+MAP_HEIGHT: int = 20
 
 MIN_ROOM_SIZE: int = 15
 MIN_LEAF_SIZE: int = 20
@@ -35,5 +35,8 @@ bar_group: pygame.sprite.Group = pygame.sprite.Group()
 mobs_group: pygame.sprite.Group = pygame.sprite.Group()
 bullets_group: pygame.sprite.Group = pygame.sprite.Group()
 dead_enemy_group: pygame.sprite.Group = pygame.sprite.Group()
+drop_weapons_group: pygame.sprite.Group = pygame.sprite.Group()
+lava_group: pygame.sprite.Group = pygame.sprite.Group()
+boss_group: pygame.sprite.Group = pygame.sprite.Group()
 
-#engry_mobs_group: pygame.sprite.Group = pygame.sprite.Group()
+# engry_mobs_group: pygame.sprite.Group = pygame.sprite.Group()

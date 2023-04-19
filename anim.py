@@ -1,12 +1,16 @@
+import random
 import threading
 import time
 from typing import Any
 
 import pygame
+from pygame import mixer
 
 from Enemy_dead import EnemyDead
 from animation_sprite import AnimationSprite
+from drop_weapons import DropWeapon
 from functions import Pair, load_image
+from music import *
 from weapons import Weapon
 from settings import *
 
@@ -49,6 +53,9 @@ class Anim(AnimationSprite):
 
     def kill(self) -> None:
         dead_enemy_group.add(EnemyDead(self.rect.centerx, self.rect.centery))
+        if random.randint(0, 100) < 20:
+            DropWeapon('RoguelikeWeapons/Weapons 1-Sheet.png', columns=25, rows=8, column=random.randint(1, 25),
+                       width_image=50, pos=self.rect.center)
         super(Anim, self).kill()
         if self.weapon is not None:
             self.weapon.kill()
@@ -124,6 +131,16 @@ class FlyingCreature(EngryMob):
         super(FlyingCreature, self).__init__(
             'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/fly_anim_spritesheet2.png',
             [[0] * 4 for _ in range(1)], x, y, speed=10, hp=50)
+        self.song_damage = pygame.mixer.Sound('music/bat_take_damage.mp3')
+
+    def kill(self) -> None:
+        SONG_DIE_FLYING_CREATURE.play(0)
+        super(FlyingCreature, self).kill()
+
+    def set_damage(self, hp: int):
+        super(FlyingCreature, self).set_damage(hp)
+        self.song_damage.play(0)
+
 
 
 class GoblinCreature(AnimationMoveAnim):
@@ -131,3 +148,42 @@ class GoblinCreature(AnimationMoveAnim):
         super(GoblinCreature, self).__init__(
             'v1.1 dungeon crawler 16X16 pixel pack/enemies/goblin/goblin.png',
             [[0] * 6 for _ in range(4)], x, y, speed=10, hp=50)
+
+    def set_damage(self, hp: int):
+        super(GoblinCreature, self).set_damage(hp)
+        SONG_DAMAGE_FLYING_CREATURE.play(0)
+
+    def kill(self) -> None:
+        SONG_DIE_GOBLIN_CREATURE.play(0)
+        super(GoblinCreature, self).kill()
+
+
+
+class FlyingCreature2(EngryMob):
+    def __init__(self, x: int, y: int):
+        super(FlyingCreature2, self).__init__(
+            'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/bat.png',
+            [[0] * 5 for _ in range(1)], x, y, speed=10, hp=50)
+
+    def set_damage(self, hp: int):
+        super(FlyingCreature2, self).set_damage(hp)
+        SONG_DAMAGE_FLYING_CREATURE.play(0)
+
+    def kill(self) -> None:
+        SONG_DIE_FLYING_CREATURE.play(0)
+        super(FlyingCreature2, self).kill()
+
+
+class FlyingCreature3(EngryMob):
+    def __init__(self, x: int, y: int):
+        super(FlyingCreature3, self).__init__(
+            'v1.1 dungeon crawler 16X16 pixel pack/enemies/flying creature/bat2.png',
+            [[0] * 5 for _ in range(1)], x, y, speed=10, hp=50)
+
+    def kill(self) -> None:
+        SONG_DIE_FLYING_CREATURE.play(0)
+        super(FlyingCreature3, self).kill()
+
+    def set_damage(self, hp: int):
+        super(FlyingCreature3, self).set_damage(hp)
+        SONG_DAMAGE_FLYING_CREATURE.play(0)

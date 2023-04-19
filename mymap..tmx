@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="../../Desktop/NewProject/NewCollection.tsx"/>
- <layer id="1" name="Слой тайлов 1" width="30" height="20">
-  <data encoding="base64" compression="zlib">
-   eJyNltGKwjAQRfMDErBC0Yam7kL7YBX0/z/OBmbw7t2b2IdD2tLkzEzGxlMI4bTRGXHjYETgsINu53v4vjs7MT8KeC7H3YmR81JxPoC08UuMDY4Gx6Tq6a6nrVuuM7kGg2NYgNGeuRvXV95kzifk5/EX12RjNjAG9HJMvJ/K675sfncm8zoZrjF/tR8en9pT95b17lDfoUGm+5oPUT3rde7NPdKaOGKtuea1OG/hf395vj7vLuZxHlPDgZwB1dfuXWEs/FTqOoW/++3PE1DuL8atsseYzwL1Xmld7md3c57JcixrvIyW18mU80Lub/XtIddXw837iN51516y16/Zi319JK/XnJ3XjdloOXvhZG8Mn+/aAOvOlO8VUN6z1RV/D61cHeXuyYf5zuBz56XiRC+fY+ifxfqDuJ/C57tQ82E/ReFtndvf+ki5HP5GqbMbz3buuz1gbtxD/L+Fzwg1r1YTfFZ7RznfMnU9Ng==
-  </data>
- </layer>
-</map>

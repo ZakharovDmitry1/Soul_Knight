@@ -94,6 +94,20 @@ class Map:
                     wall.paste(newImage,
                                (x * TILE_SIZE, y * TILE_SIZE))
                     self.player = Player(x, y)
+                elif self.map[y][x] == 't':
+                    mobs_group.add(FlyingCreature2(x, y))
+                    newImage = Image.open(
+                        f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
+                        'RGBA').resize((TILE_SIZE, TILE_SIZE))
+                    wall.paste(newImage,
+                               (x * TILE_SIZE, y * TILE_SIZE))
+                elif self.map[y][x] == 'y':
+                    mobs_group.add(FlyingCreature3(x, y))
+                    newImage = Image.open(
+                        f'v1.1 dungeon crawler 16X16 pixel pack/tiles/floor/floor_{random.randint(1, 10)}.png').convert(
+                        'RGBA').resize((TILE_SIZE, TILE_SIZE))
+                    wall.paste(newImage,
+                               (x * TILE_SIZE, y * TILE_SIZE))
         wall.save('maps/map.png')
         Tile('maps/map.png', 0, 0)
         # вернем игрока
@@ -324,10 +338,14 @@ class Leaf:
 
             for i in range(self.roomSize[0]):
                 for j in range(self.roomSize[1]):
-                    if random.randint(0, 100) == 0 and self.room_map[i][j] == '.':
+                    if random.randint(0, 300) == 0 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'f'
                     elif random.randint(0, 100) == 1 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'g'
+                    elif random.randint(0, 300) == 1 and self.room_map[i][j] == '.':
+                        self.room_map[i][j] = 't'
+                    elif random.randint(0, 300) == 1 and self.room_map[i][j] == '.':
+                        self.room_map[i][j] = 'y'
 
     def split(self) -> bool:
         if self.leftChild is not None or self.rightChild is not None:
