@@ -3,7 +3,7 @@ import random
 import threading
 import time
 from abc import abstractmethod
-from typing import Any
+
 
 import PIL
 import pygame
@@ -183,5 +183,5 @@ class Gun(Weapon):
         GUN_ATTACK.play(0)
         Bullet(self.bullet, (self.rect.x, self.rect.y), target, 10, self.damage, rotate=self.angle, resize=40)
 
-    def update(self, *args: Any, **kwargs: Any) -> None:
+    def update(self, *args, **kwargs) -> None:
         ...

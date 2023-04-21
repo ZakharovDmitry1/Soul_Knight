@@ -6,6 +6,7 @@ from pprint import pprint
 
 import pygame as pygame
 
+from animation_sprite import Tile2
 from boss_map import BossMap
 from bullets import Bullet
 from functions import load_image
@@ -112,11 +113,11 @@ def boss_window():
             pygame.display.iconify()
         # map.create_way()
 
-        # for i in bullets_group:
-        #     if i.rect.colliderect(boss.rect):
-        #         boss.set_damage(i.damage)
-        #         i.kill()
-        #         print(i.damage)
+        for i in bullets_group:
+            if i.rect.colliderect(boss.rect):
+                boss.set_damage(i.damage)
+                i.kill()
+                print(i.damage)
 
 
         screen.fill((44, 49, 54))
@@ -154,6 +155,7 @@ def start_first_window():
     camera = Camera()
     time_update: float = time.time()
     SONG_START_PLAY.play(1000)
+    cach_group.add(Tile2('Any_Pictures/walls/img_3.png', 12, 3))
 
     while running:
         if time.time() - time_move_mobs >= TIME_MOVE_MOBS:
@@ -234,6 +236,7 @@ def start_first_window():
         bullets_group.draw(screen)
         dead_enemy_group.draw(screen)
         drop_weapons_group.draw(screen)
+        cach_group.draw(screen)
 
         clock.tick(FPS)
         camera.update(player)
@@ -347,5 +350,4 @@ def start_game():
 
 start_first_window()
 start_game()
-# boss_window()
 start_first_window()
