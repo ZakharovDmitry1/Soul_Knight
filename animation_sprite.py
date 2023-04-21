@@ -2,7 +2,7 @@ import os.path
 import sys
 import time
 from abc import abstractmethod
-from typing import Any
+
 
 import pygame.sprite
 from PIL import Image
@@ -43,7 +43,7 @@ class AnimationSprite(pygame.sprite.Sprite):
                 self.list_for_sprites[j][i] = sheet.subsurface(pygame.Rect(
                     frame_location, self.rect.size))
 
-    def update(self, *args: Any, **kwargs: Any) -> bool:
+    def update(self, *args, **kwargs) -> bool:
         # print(self.timer - time.perf_counter())
         if abs(self.timer - time.perf_counter()) > TIME_UPDATE_MOBS_ANIMATION:
             self.cur_frame = (self.cur_frame + 1) % len(self.list_for_sprites[self.cur_column])
@@ -57,6 +57,23 @@ class Tile(pygame.sprite.Sprite):
     def __init__(self, tile_type: str, pos_x: int, pos_y: int, colorkey: tuple = (0, 0, 0), resize: int = -1,
                  set_tile_size: bool = False):
         super().__init__(tiles_group, all_sprites)
+        self.image = load_image(tile_type)
+        self.image.set_colorkey(colorkey)
+        if resize != -1:
+            newImage = Image.open(tile_type).convert('RGBA').resize((resize, resize))
+            newImage.save('cache/wall.png')
+            self.image = load_image('cache/wall.png')
+            self.image.set_colorkey(colorkey)
+        if set_tile_size:
+            self.rect = pygame.rect.Rect(TILE_SIZE * pos_x, TILE_SIZE * pos_y, TILE_SIZE, TILE_SIZE)
+        else:
+            self.rect = self.image.get_rect().move(
+                TILE_SIZE * pos_x, TILE_SIZE * pos_y)
+
+class Tile2(pygame.sprite.Sprite):
+    def __init__(self, tile_type: str, pos_x: int, pos_y: int, colorkey: tuple = (0, 0, 0), resize: int = -1,
+                 set_tile_size: bool = False):
+        super().__init__(tiles_group)
         self.image = load_image(tile_type)
         self.image.set_colorkey(colorkey)
         if resize != -1:

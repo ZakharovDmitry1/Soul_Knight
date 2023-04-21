@@ -42,5 +42,7 @@ class Bullet(pygame.sprite.Sprite):
                 if pygame.sprite.collide_rect(self, i):
                     i.set_damage(self.damage)
                     self.kill()
+                    print('!')
             if pygame.sprite.spritecollideany(self, walls_group):
                 self.kill()
+                print('!')
