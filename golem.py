@@ -1,6 +1,5 @@
 import math
 import time
-from typing import Any
 
 import pygame
 from pygame.surface import Surface
@@ -36,7 +35,7 @@ class SkeletonKing(pygame.sprite.Sprite):
         self.list_x = [math.cos(math.pi / 8 * i) + math.sin(math.pi / 8 * i) for i in range(16)]
         self.list_y = [math.sin(math.pi / 8 * i) - math.cos(math.pi / 8 * i) for i in range(16)]
 
-    def update(self, *args: Any, **kwargs: Any) -> bool:
+    def update(self, *args, **kwargs) -> bool:
         # print(self.timer - time.perf_counter())
         if abs(self.timer - time.perf_counter()) > 0.75:
             self.cur_frame = (self.cur_frame + 1) % len(self.list_for_sprites[self.cur_column])

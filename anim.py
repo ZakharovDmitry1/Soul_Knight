@@ -1,7 +1,6 @@
 import random
 import threading
 import time
-from typing import Any
 
 import pygame
 from pygame import mixer
@@ -104,7 +103,7 @@ class AnimationMoveAnim(EngryMob):
     def __init__(self, sheet: str, list_for_sprites: list[list], x: int, y: int, speed: int = 10, hp: int = 100):
         super(AnimationMoveAnim, self).__init__(sheet, list_for_sprites, x, y, speed, hp)
 
-    def update(self, *args: Any, **kwargs: Any) -> None:
+    def update(self, *args, **kwargs) -> None:
         super().update()
         if self.cur_column == 2:
             self.cur_column = 0

@@ -1,6 +1,5 @@
 import random
 import time
-from typing import Any
 from animation_sprite import AnimationSprite
 
 
@@ -13,7 +12,7 @@ class EnemyDead(AnimationSprite):
         self.rect.centery = pos_y
         self.count: int = 0
 
-    def update(self, *args: Any, **kwargs: Any) -> None:
+    def update(self, *args, **kwargs) -> None:
         f: bool = super(EnemyDead, self).update()
         if f:
             self.count += 1

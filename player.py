@@ -1,6 +1,5 @@
 import threading
 import time
-from typing import Any
 
 import pygame
 
@@ -83,7 +82,7 @@ class Player(Anim):
             self.hp_bar.defence.defence = DEFENCE
         self.hp_bar.defence.reset_bar()
 
-    def update(self, *args: Any, **kwargs: Any) -> None:
+    def update(self, *args, **kwargs) -> None:
         super().update()
         if time.time() - self.time_damage > 5:
             self.healing()
