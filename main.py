@@ -23,6 +23,12 @@ pygame.init()
 clock = pygame.time.Clock()
 mixer.init()
 
+W: int = 0
+
+def xxx(k):
+    global W
+    W = k
+
 
 def len_to_points(a: tuple[float, float], b: tuple[float, float]):
     return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
@@ -155,7 +161,12 @@ def start_first_window():
     camera = Camera()
     time_update: float = time.time()
     SONG_START_PLAY.play(1000)
-    cach_group.add(Tile2('Any_Pictures/walls/img_3.png', 12, 3))
+    if W == 0:
+        cach_group.add(Tile2('Any_Pictures/walls/img_3.png', 12, 3))
+    elif W == 1:
+        cach_group.add(Tile2('Any_Pictures/walls/img_5.png', 12, 3))
+    else:
+        cach_group.add(Tile2('Any_Pictures/walls/img_6.png', 12, 3))
 
     while running:
         if time.time() - time_move_mobs >= TIME_MOVE_MOBS:
@@ -323,6 +334,11 @@ def start_game():
 
         if mobs_group.__len__() == 0:
             running = False
+            xxx(1)
+
+        if player.hp <= 0:
+            running = False
+            xxx(2)
 
         screen.fill((44, 49, 54))
         all_sprites.update()
@@ -350,4 +366,6 @@ def start_game():
 
 start_first_window()
 start_game()
+if W == 0:
+    xxx(2)
 start_first_window()

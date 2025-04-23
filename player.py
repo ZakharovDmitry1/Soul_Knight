@@ -8,12 +8,12 @@ from anim import Anim
 from guns import *
 from healthbar import Healthbar
 from settings import *
-from short_guns import ShortGun1
+from short_guns import *
 from weapons import *
 
 
 class Player(Anim):
-    def __init__(self, pos_x: int, pos_y: int, hp: int = 100, speed: int = 22):
+    def __init__(self, pos_x: int, pos_y: int, hp: int = 50, speed: int = 22):
         self.sheet: str = 'v1.1 dungeon crawler 16X16 pixel pack/heroes/knight/knight_sprite.png'
 
         self.real_pos_x: int = pos_x * TILE_SIZE

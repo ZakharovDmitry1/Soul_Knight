@@ -6,8 +6,8 @@ HEIGHT: int = 600
 
 TILE_SIZE: int = 64
 
-MAP_WIDTH: int = 50
-MAP_HEIGHT: int = 50
+MAP_WIDTH: int = 70
+MAP_HEIGHT: int = 70
 
 MIN_ROOM_SIZE: int = 15
 MIN_LEAF_SIZE: int = 20
@@ -21,7 +21,7 @@ FPS: int = 40
 MOB_RADIUS: int = 25
 TIME_MOVE_MOBS: float = 0.01
 
-DEFENCE: int = 400
+DEFENCE: int = 50
 
 MONITOR_WIDTH: int = get_monitors()[0].width
 MONITOR_HEIGHT: int = get_monitors()[0].height

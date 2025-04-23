@@ -53,9 +53,14 @@ class Anim(AnimationSprite):
 
     def kill(self) -> None:
         dead_enemy_group.add(EnemyDead(self.rect.centerx, self.rect.centery))
-        if random.randint(0, 100) < 20:
-            DropWeapon('RoguelikeWeapons/Weapons 1-Sheet.png', columns=25, rows=8, column=random.randint(1, 25),
-                       width_image=50, pos=self.rect.center)
+        if random.randint(0, 100) < 10:
+            k = random.randint(1, 25)
+            DropWeapon('RoguelikeWeapons/Weapons 1-Sheet.png', columns=25, rows=8, column=k,
+                       width_image=50, pos=self.rect.center, class1='Gun', gid=k)
+        elif random.randint(0, 100) < 10:
+            k = random.randint(1, 9)
+            DropWeapon('RoguelikeWeapons/Weapons 2-Sheet.png', columns=11, rows=8, column=random.randint(1, 9),
+                       width_image=50, pos=self.rect.center, class1='Gun', gid=(k + 25))
         super(Anim, self).kill()
         if self.weapon is not None:
             self.weapon.kill()

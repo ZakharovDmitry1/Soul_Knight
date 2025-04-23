@@ -6,11 +6,15 @@ from functions import load_image
 from settings import all_sprites, drop_weapons_group
 from weapons import Weapon
 from guns import *
+from short_guns import *
 
 
 class DropWeapon(pygame.sprite.Sprite):
-    def __init__(self, path_img: str, columns: int, rows: int, column: int, width_image: int, pos: tuple[int, int]):
+    def __init__(self, path_img: str, columns: int, rows: int, column: int, width_image: int, pos: tuple[int, int], class1:str, gid: int):
         super(DropWeapon, self).__init__(all_sprites, drop_weapons_group)
+
+        self.class1 = class1
+        self.gid = gid
 
         new_img = Image.open(path_img).convert('RGBA')
         new_img = new_img.resize(((int)(rows * width_image),
@@ -36,4 +40,4 @@ class DropWeapon(pygame.sprite.Sprite):
     def kill_drop_weapon(self) -> Weapon:
         p = self.column
         self.kill()
-        return eval(f'Gun{p}()')
+        return eval(f'{self.class1}{self.gid}()')

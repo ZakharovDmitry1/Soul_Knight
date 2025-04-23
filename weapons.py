@@ -139,7 +139,8 @@ class Stick(Weapon):
 
 class ShortGun(Weapon):
     def __init__(self, first_img: str, rows: int, columns: int, column: int,
-                 width_image: int, cooldown: float, damage: int, max_columns: int, bullet: Surface):
+                 width_image: int, cooldown: float, damage: int, max_columns: int, bullet: Surface, kill_time: float):
+        self.kill_time = kill_time
         super(ShortGun, self).__init__(first_img, rows=rows, columns=columns, column=column,
                                        width_image=width_image, cooldown=cooldown, damage=damage, bullet=bullet,
                                        max_columns=max_columns)
@@ -154,7 +155,7 @@ class ShortGun(Weapon):
             rotatedX = vec[0] * math.cos(angle) - vec[1] * math.sin(angle)
             rotatedY = vec[0] * math.sin(angle) + vec[1] * math.cos(angle)
             Bullet(self.bullet, (self.rect.x, self.rect.y), (rotatedX + self.rect.x, rotatedY + self.rect.y),
-                   random.randint(5, 16), self.damage, rotate=self.angle, resize=40, kill_time=0.4)
+                   random.randint(5, 16), self.damage, rotate=self.angle, resize=40, kill_time=self.kill_time)
 
 
 class Bow(Weapon):

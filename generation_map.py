@@ -338,13 +338,13 @@ class Leaf:
 
             for i in range(self.roomSize[0]):
                 for j in range(self.roomSize[1]):
-                    if random.randint(0, 300) == 0 and self.room_map[i][j] == '.':
+                    if random.randint(0, 100) == 0 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'f'
-                    elif random.randint(0, 100) == 1 and self.room_map[i][j] == '.':
+                    elif random.randint(0, 37) == 1 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'g'
-                    elif random.randint(0, 300) == 1 and self.room_map[i][j] == '.':
+                    elif random.randint(0, 100) == 1 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 't'
-                    elif random.randint(0, 300) == 1 and self.room_map[i][j] == '.':
+                    elif random.randint(0, 100) == 1 and self.room_map[i][j] == '.':
                         self.room_map[i][j] = 'y'
 
     def split(self) -> bool:
